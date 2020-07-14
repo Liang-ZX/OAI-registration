@@ -2,5 +2,7 @@ data
 .ipynb_checkpoints/
 __pycache__/
 split_seq_OAI/
-
+*.jpg
+*.png
+*.dcm
 
