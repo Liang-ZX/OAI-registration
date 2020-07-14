@@ -1,5 +1,6 @@
 data
 .ipynb_checkpoints/
 __pycache__/
+split_seq_OAI/
 
 
