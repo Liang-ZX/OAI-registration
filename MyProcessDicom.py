@@ -90,7 +90,8 @@ def postprocess(images):
 
 
 def preprocess(images):
-    return do_thresh(images)
+    tmp_img = do_thresh(images)
+    return postprocess(tmp_img)
 
 
 # def preprocess(images):
