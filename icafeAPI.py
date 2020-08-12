@@ -56,7 +56,7 @@ def generate_centerline(pid, TPid, side='L'):
     spacingbetweenslices = 1.5
     pixelspacing = 0.36458
     bbswclist = db.getSWCresult((TPS[TPid],pid,eid))
-    dir_path = r'../result/OAIMTP/P'+pid+side
+    dir_path = r'../centerline/P'+pid+side
     if not os.path.isdir(dir_path):
         os.mkdir(dir_path)
     swcname = dir_path+'/tracing_raw_ves_TH_'+str(TPid)+'_P'+pid+side+'_U.swc'
