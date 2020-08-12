@@ -23,7 +23,7 @@ def resample_image(fixed_image, space=None):
         isoresample.SetOutputOrigin(fixed_image.GetOrigin())
         orig_size = np.array(fixed_image.GetSize(), dtype=np.int)    
         new_size = orig_size.copy()
-        new_size[2] = int(space[2]*(space[2]/space[0])+0.5)
+        new_size[2] = int(orig_size[2]*(space[2]/space[0])+0.5)
         new_size = [int(s) for s in new_size]
         print(orig_size, new_size)
         isoresample.SetSize(new_size)
