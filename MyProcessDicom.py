@@ -15,21 +15,37 @@ from ipywidgets import interact, fixed
 import cv2
 
 
-def resample_image(fixed_image):
-    isoresample = sitk.ResampleImageFilter()
-    isoresample.SetInterpolator(sitk.sitkBSpline)
-    isoresample.SetOutputDirection(fixed_image.GetDirection())
-    isoresample.SetOutputOrigin(fixed_image.GetOrigin())
-    orig_spacing = fixed_image.GetSpacing()
-    new_spacing = (orig_spacing[0],orig_spacing[0],orig_spacing[0])
-    isoresample.SetOutputSpacing(new_spacing)
-    orig_size = np.array(fixed_image.GetSize(), dtype=np.int)    
-    new_size = orig_size.copy()
-    new_size[2] = int(orig_size[2]*(orig_spacing[2]/orig_spacing[0])+0.5)
-    new_size = [int(s) for s in new_size]
-    print(orig_size, new_size)
-    isoresample.SetSize(new_size)
-    return isoresample.Execute(fixed_image)
+def resample_image(fixed_image, space=None):
+    if space is not None:
+        isoresample = sitk.ResampleImageFilter()
+        isoresample.SetInterpolator(sitk.sitkBSpline)
+        isoresample.SetOutputDirection(fixed_image.GetDirection())
+        isoresample.SetOutputOrigin(fixed_image.GetOrigin())
+        orig_size = np.array(fixed_image.GetSize(), dtype=np.int)    
+        new_size = orig_size.copy()
+        new_size[2] = int(space[2]*(space[2]/space[0])+0.5)
+        new_size = [int(s) for s in new_size]
+        print(orig_size, new_size)
+        isoresample.SetSize(new_size)
+        orig_spacing = fixed_image.GetSpacing()
+        new_spacing = (orig_spacing[0],orig_spacing[0],orig_spacing[0]*orig_size[2]/new_size[2])
+        isoresample.SetOutputSpacing(new_spacing)
+        return isoresample.Execute(fixed_image)
+    else:
+        isoresample = sitk.ResampleImageFilter()
+        isoresample.SetInterpolator(sitk.sitkBSpline)
+        isoresample.SetOutputDirection(fixed_image.GetDirection())
+        isoresample.SetOutputOrigin(fixed_image.GetOrigin())
+        orig_spacing = fixed_image.GetSpacing()
+        new_spacing = (orig_spacing[0],orig_spacing[0],orig_spacing[0])
+        isoresample.SetOutputSpacing(new_spacing)
+        orig_size = np.array(fixed_image.GetSize(), dtype=np.int)    
+        new_size = orig_size.copy()
+        new_size[2] = int(orig_size[2]*(orig_spacing[2]/orig_spacing[0])+0.5)
+        new_size = [int(s) for s in new_size]
+        print(orig_size, new_size)
+        isoresample.SetSize(new_size)
+        return isoresample.Execute(fixed_image)
 
 
 def adaptive_thresh(images):
