@@ -139,8 +139,8 @@ def bspline_intra_modal_registration(fixed_image, moving_image, fixed_image_mask
             registration_method.AddCommand(sitk.sitkEndEvent, rc.metric_and_reference_end_plot)
             registration_method.AddCommand(sitk.sitkIterationEvent, lambda: rc.metric_and_reference_plot_values(registration_method, fixed_points, moving_points))
         else:
-            registration_method.AddCommand(sitk.sitkStartEvent, start_plot)
-            registration_method.AddCommand(sitk.sitkEndEvent, end_plot)
+            registration_method.AddCommand(sitk.sitkStartEvent, vis.start_plot)
+            registration_method.AddCommand(sitk.sitkEndEvent, vis.end_plot)
             registration_method.AddCommand(sitk.sitkMultiResolutionIterationEvent, vis.update_multires_iterations) 
             registration_method.AddCommand(sitk.sitkIterationEvent, lambda: vis.plot_values(registration_method))
     
@@ -220,8 +220,8 @@ def bspline_intra_modal_registration2(fixed_image, moving_image, fixed_image_mas
             registration_method.AddCommand(sitk.sitkEndEvent, rc.metric_and_reference_end_plot)
             registration_method.AddCommand(sitk.sitkIterationEvent, lambda: rc.metric_and_reference_plot_values(registration_method, fixed_points, moving_points))
         else:
-            registration_method.AddCommand(sitk.sitkStartEvent, start_plot)
-            registration_method.AddCommand(sitk.sitkEndEvent, end_plot)
+            registration_method.AddCommand(sitk.sitkStartEvent, vis.start_plot)
+            registration_method.AddCommand(sitk.sitkEndEvent, vis.end_plot)
             registration_method.AddCommand(sitk.sitkMultiResolutionIterationEvent, vis.update_multires_iterations) 
             registration_method.AddCommand(sitk.sitkIterationEvent, lambda: vis.plot_values(registration_method))
      

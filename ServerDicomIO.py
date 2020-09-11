@@ -17,7 +17,6 @@ import DB
 importlib.reload(DB)
 from DB import DB
 
-icafepath = r'../iCafe/result/OAIMTP/'
 transform_path = r'../transform/'
 TPS = ['0','12','18','24','30','36','48','60','72','84','96']
 split_seq_path = 'split_seq_OAI/'
