@@ -2,8 +2,6 @@ import pydicom
 import os,re
 import numpy as np
 import shutil
-import matplotlib.pyplot as plt
-%matplotlib inline
 import cv2
 from pydicom.dataset import Dataset, FileDataset
 import tempfile
@@ -30,25 +28,6 @@ importlib.reload(DB)
 from DB import DB
 import pandas as pd
 
-file_name = "../slicelocation.csv"
-icafepath = r'../iCafe/result/OAIMTP/without_xy/'
-sample_num = 5
-data = pd.read_csv(file_name)
-
-caselist = []
-for i in range(sample_num):  # self-defined
-    caselist.append({'pid':str(data.loc[i,"PID"]), 'TP':[0,1,2,3,4,5,6,8,10], 'side':str(data.loc[i,"EID"])[-1]})
-
-# #split seqs for a case
-getFileFromDB(caselist)
-
-if not os.path.exists(icafepath):
-    os.mkdir(icafepath)
-    
-for casei in caselist:
-    do_registration(casei, affine_registration, isVis=False)
-    generate_result(casei)
-    
 
 def do_registration(casei, regis_fun, isVis=False):
     pi = casei['pid']
@@ -132,3 +111,25 @@ def generate_result(case):
         resampled = resample_image(resampled, space2)
         sitk.WriteImage(sitk.Cast(resampled, sitk.sitkInt16), icafesavepath + 'TH_0_P' + pid + side + '_U' + SEQ + '.tif')
     return
+
+
+file_name = "../slicelocation.csv"
+icafepath = r'../iCafe/result/OAIMTP/without_xy/'
+sample_num = 30
+offset = 5
+data = pd.read_csv(file_name)
+
+caselist = []
+for i in range(sample_num):  # self-defined
+    caselist.append({'pid':str(data.loc[i+offset,"PID"]), 'TP':[0,1,2,3,4,5,6,8,10], 'side':str(data.loc[i+offset,"EID"])[-1]})
+
+# #split seqs for a case
+getFileFromDB(caselist)
+
+if not os.path.exists(icafepath):
+    os.mkdir(icafepath)
+    
+for casei in caselist:
+    do_registration(casei, affine_registration, isVis=False)
+    generate_result(casei)
+    
