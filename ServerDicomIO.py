@@ -17,7 +17,7 @@ import DB
 importlib.reload(DB)
 from DB import DB
 
-transform_path = r'../transform/'
+transform_path = r'Y:/transform/'
 TPS = ['0','12','18','24','30','36','48','60','72','84','96']
 split_seq_path = 'split_seq_OAI/'
 if not os.path.exists(split_seq_path):

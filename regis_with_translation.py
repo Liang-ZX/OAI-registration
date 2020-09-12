@@ -71,6 +71,18 @@ def registration_with_centerline(case):
     tp1 = regtp[0]
     print("Fixed Image %d" % tp1)
     _, line1 = get_centerline(pid, tp1, side)
+    
+    tp1_casepath = precasepath + 'TP0/'
+    fixed_image = get_dicom_series(tp1_casepath)
+    icafesavepath = icafepath+'0_P'+pi+side+'_U'+'/'
+    
+    # isotropic resolution
+    img1 = resample_image(fixed_image)
+    sitk.WriteImage(sitk.Cast(img1, sitk.sitkInt16), icafesavepath + 'TH_0_P' + pi + side + '_U.tif')
+    print('save to icafe path', icafesavepath + 'TH_0_P' + pi + side + '_U.tif')
+    sitk.WriteImage(sitk.Cast(img1, sitk.sitkInt16), icafesavepath + 'TH_0_P'+  pi + side + '_US100.tif')
+    print('save to icafe path', icafesavepath + 'TH_0_P' + pi + side + '_US100.tif')
+    
     for tp2 in regtp[1:]:
         tp2_casepath = getdcmpath(pid,tp2,side)
         if tp2_casepath is None:
@@ -126,9 +138,9 @@ def generate_result(case):
 
 
 file_name = "../slicelocation.csv"
-icafepath = r'../iCafe/result/OAIMTP/with_translation/'
-sample_num = 30
-offset = 5
+icafepath = r'../iCafe/result/with_translation/'
+sample_num = 25
+offset = 9
 data = pd.read_csv(file_name)
 
 caselist = []
@@ -137,7 +149,7 @@ for i in range(sample_num):  # self-defined
 
 if not os.path.exists(icafepath):
     os.mkdir(icafepath)
-    
+
 for case in caselist:
     pid = case['pid']
     side = case['side']
@@ -145,6 +157,8 @@ for case in caselist:
         generate_centerline(pid, case['TP'][j], side)
     file_path = r'../centerline/P'+pid+side+'/tracing_raw_ves_TH_'+str(case['TP'][0])+'_P'+pid+side+'_U.swc'
     icafesavepath = icafepath+'0_P'+pid+side+'_U'+'/'
+    if not os.path.exists(icafesavepath):
+        os.mkdir(icafesavepath)
     tmp_path = r'../iCafe/result/OAIMTP/without_xy/0_P'+pid+side+'_U'+'/'
     shutil.copy(file_path, icafesavepath)
     shutil.copy(file_path, tmp_path)

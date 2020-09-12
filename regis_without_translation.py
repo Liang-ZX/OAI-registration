@@ -114,7 +114,7 @@ def generate_result(case):
 
 
 file_name = "../slicelocation.csv"
-icafepath = r'../iCafe/result/OAIMTP/without_xy/'
+icafepath = r'../iCafe/result/without_xy/'
 sample_num = 30
 offset = 5
 data = pd.read_csv(file_name)
