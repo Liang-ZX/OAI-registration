@@ -1,0 +1,11 @@
+D:\Yin\OAI\pyKNEEr-yg\reference\newsubject
+D:\Yin\OAI\pyKNEEr-yg\preprocessed
+r reference.mha
+m 9189303L_TP0_prep.mha
+m 9189303R_TP0_prep.mha
+m 9212386L_TP0_prep.mha
+m 9212386R_TP0_prep.mha
+m 9867247L_TP0_prep.mha
+m 9867247R_TP0_prep.mha
+m 9982404L_TP0_prep.mha
+m 9982404R_TP0_prep.mha
