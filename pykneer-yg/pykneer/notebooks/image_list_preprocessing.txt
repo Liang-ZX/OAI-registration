@@ -1,4 +1,4 @@
-D:\Yin\OAI\pyKNEEr-yg\original\
+..\..\original\
 9189303L\TP0
 left
 9189303L\TP1

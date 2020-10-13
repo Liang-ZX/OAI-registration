@@ -6,4 +6,6 @@ split_seq_OAI/
 *.png
 *.dcm
 pykneer-yg/original
+pykneer-yg/preprocessed
+pykneer-yg/vesmask
 
