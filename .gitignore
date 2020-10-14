@@ -8,4 +8,5 @@ split_seq_OAI/
 pykneer-yg/original
 pykneer-yg/preprocessed
 pykneer-yg/vesmask
+pykneer-yg/reference/newsubject/*
 
