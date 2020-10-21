@@ -9,4 +9,6 @@ pykneer-yg/original
 pykneer-yg/preprocessed
 pykneer-yg/vesmask
 pykneer-yg/reference/newsubject/*
+pykneer-yg/registered/
+pykneer-yg/segmented/
 
