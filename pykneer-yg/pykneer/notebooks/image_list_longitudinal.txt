@@ -1,27 +1,4 @@
-D:\Yin\OAI\pyKNEEr-yg\reference\longitudinal
-D:\Yin\OAI\pyKNEEr-yg\preprocessed
+C:\Zhixuan\OAI-registration\pyKNEEr-yg\reference\longitudinal
+C:\Zhixuan\OAI-registration\pyKNEEr-yg\preprocessed
 r 9189303L_TP0_prep.mha
 m 9189303L_TP1_prep.mha
-r 9189303R_TP0_prep.mha
-m 9189303R_TP1_prep.mha
-m 9189303R_TP3_prep.mha
-m 9189303R_TP5_prep.mha
-m 9189303R_TP6_prep.mha
-m 9189303R_TP8_prep.mha
-r 9212386L_TP0_prep.mha
-m 9212386L_TP1_prep.mha
-m 9212386L_TP3_prep.mha
-m 9212386L_TP6_prep.mha
-m 9212386L_TP8_prep.mha
-m 9212386L_TP10_prep.mha
-r 9212386R_TP0_prep.mha
-m 9212386R_TP1_prep.mha
-m 9212386R_TP3_prep.mha
-m 9212386R_TP5_prep.mha
-m 9212386R_TP6_prep.mha
-m 9212386R_TP8_prep.mha
-m 9212386R_TP10_prep.mha
-r 9867247L_TP0_prep.mha
-m 9867247L_TP1_prep.mha
-r 9867247R_TP0_prep.mha
-m 9867247R_TP1_prep.mha
