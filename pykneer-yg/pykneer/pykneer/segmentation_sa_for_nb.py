@@ -114,7 +114,7 @@ def prepare_reference(all_image_data):
 # ---------------------------------------------------------------------------------------------------------------------------
 
 def register_bone_to_reference_s(image_data):
-    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["current_anatomy"] + "spline_name"]):
+    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["bone"] + "spline_name"]):
         return
 #    print ("-> Registering " + image_data["moving_root"])
 
@@ -146,7 +146,7 @@ def register_bone_to_reference(all_image_data, n_of_processes):
 
 
 def invert_bone_transformations_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"] + "i_spline_transf_name"]):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["bone"] + "i_spline_transf_name"]):
         return
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
@@ -176,7 +176,7 @@ def invert_bone_transformations(all_image_data, n_of_processes):
 
 
 def warp_bone_mask_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"]+"m_spline_name"]):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["bone"]+"m_spline_name"]):
         return
 
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
@@ -239,7 +239,7 @@ def warp_bone_mask(all_image_data, n_of_processes):
 # SEGMENTING CARTILAGE ------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 def register_cartilage_to_reference_s(image_data):
-    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["current_anatomy"] + "spline_transf_name"]):
+    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["cartilage"] + "spline_transf_name"]):
         return
 #    print ("-> Registering " + image_data["moving_root"])
 
@@ -264,7 +264,7 @@ def register_cartilage_to_reference(all_image_data, n_of_processes):
 
 
 def invert_cartilage_transformations_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"] + "i_spline_transf_name"]):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["cartilage"] + "i_spline_transf_name"]):
         return
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
@@ -291,7 +291,7 @@ def invert_cartilage_transformations(all_image_data, n_of_processes):
 
 
 def warp_cartilage_mask_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"]+"m_spline_name"]):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["cartilage"]+"m_spline_name"]):
         return
 #    print ("-> Warping cartilage mask of " + image_data["moving_root"])
 
@@ -351,7 +351,7 @@ def warp_cartilage_mask(all_image_data, n_of_processes):
 # SEGMENTING VESSEL ------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 def register_vessel_to_reference_s(image_data):
-    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["current_anatomy"] + "spline_transf_name"]):
+    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["vessel"] + "spline_transf_name"]):
         return
 
 #    print ("-> Registering " + image_data["moving_root"])
@@ -377,7 +377,7 @@ def register_vessel_to_reference(all_image_data, n_of_processes):
 
 
 def invert_vessel_transformations_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"] + "i_spline_transf_name"]):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["vessel"] + "i_spline_transf_name"]):
         return
 
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
@@ -405,7 +405,7 @@ def invert_vessel_transformations(all_image_data, n_of_processes):
 
 
 def warp_vessel_mask_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"]+"m_spline_name"]):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["vessel"]+"m_spline_name"]):
         return
 
 #    print ("-> Warping vessel mask of " + image_data["moving_root"])
