@@ -3,3 +3,17 @@
 left
 9189303L\TP1
 left
+9941446R\TP0
+right
+9941446R\TP1
+right
+9941446R\TP3
+right
+9941446R\TP5
+right
+9941446R\TP6
+right
+9941446R\TP8
+right
+9941446R\TP10
+right

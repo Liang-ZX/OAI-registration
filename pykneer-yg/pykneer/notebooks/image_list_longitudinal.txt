@@ -2,3 +2,10 @@ C:\Zhixuan\OAI-registration\pyKNEEr-yg\reference\longitudinal
 C:\Zhixuan\OAI-registration\pyKNEEr-yg\preprocessed
 r 9189303L_TP0_prep.mha
 m 9189303L_TP1_prep.mha
+r 9941446R_TP0_prep.mha
+m 9941446R_TP1_prep.mha
+m 9941446R_TP3_prep.mha
+m 9941446R_TP5_prep.mha
+m 9941446R_TP6_prep.mha
+m 9941446R_TP8_prep.mha
+m 9941446R_TP10_prep.mha

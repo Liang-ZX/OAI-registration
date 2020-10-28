@@ -167,7 +167,7 @@ def origin_to_zero_s(image_data):
     img = sitkf.origin_to_zero(img)
 
     # save image to temp
-    sitk.WriteImage(img, image_data["temp_file_name"])
+    sitk.WriteImage(img, image_data["preprocessed_file_name"])  # modify here
 
     # save image to *_orig.mha
     sitk.WriteImage(img, image_data["original_file_name"])

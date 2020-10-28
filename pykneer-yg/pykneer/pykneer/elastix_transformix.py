@@ -220,10 +220,11 @@ class bone (registration):
             return
         # change output names
         else:
-            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
-                      image_data["registered_sub_folder"] + image_data[anatomy + "rigid_name"])
-            os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
-                      image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"])
+            if not os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "rigid_name"]):
+                os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                          image_data["registered_sub_folder"] + image_data[anatomy + "rigid_name"])
+                os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
+                          image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"])
 
 
     def similarity(self, image_data):
@@ -258,10 +259,11 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
-            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
-                      image_data["registered_sub_folder"] + image_data[anatomy + "similarity_name"])
-            os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
-                      image_data["registered_sub_folder"] + image_data[anatomy + "similarity_transf_name"])
+            if not os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "similarity_name"]):
+                os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                          image_data["registered_sub_folder"] + image_data[anatomy + "similarity_name"])
+                os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
+                          image_data["registered_sub_folder"] + image_data[anatomy + "similarity_transf_name"])
 
 
     def spline(self, image_data):
@@ -299,13 +301,17 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
-            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
-                      image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"])
-            os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
-                      image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"])
+            if not os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"]):
+                os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                          image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"])
+                os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
+                          image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"])
 
 
     def i_rigid(self, image_data):
+        
+        if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"]):
+            return
 
         # anatomy
         anatomy                          = image_data["current_anatomy"]

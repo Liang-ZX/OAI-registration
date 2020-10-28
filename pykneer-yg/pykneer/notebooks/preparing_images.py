@@ -3,7 +3,6 @@ import os
 import numpy as np
 import shutil
 import matplotlib.pyplot as plt
-%matplotlib inline
 import importlib
 import sys
 import cv2
@@ -74,7 +73,7 @@ def prepare_image_and_list(caselist):
     if not os.path.exists(vesmaskpath):
         os.mkdir(vesmaskpath)
 
-    #split seqs for a case
+   #split seqs for a case
 
     # create .\image_list_preprocessing.txt
     file_path = "image_list_preprocessing.txt"
@@ -196,3 +195,7 @@ def prepare_image_and_list(caselist):
                     vesmasksitk = flip_rl(vesmasksitk)
 
                 sitk.WriteImage(vesmasksitk, vesmaskpath + '/'+pi+side+'_TP'+str(regtp[tpi])+'_prep_fv.mha')
+
+    list_file.close()
+    subject_file.close()
+    long_file.close()

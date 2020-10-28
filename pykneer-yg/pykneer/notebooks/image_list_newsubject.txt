@@ -2,3 +2,4 @@ C:\Zhixuan\OAI-registration\pyKNEEr-yg\reference\newsubject
 C:\Zhixuan\OAI-registration\pyKNEEr-yg\preprocessed
 r reference.mha
 m 9189303L_TP0_prep.mha
+m 9941446R_TP0_prep.mha
