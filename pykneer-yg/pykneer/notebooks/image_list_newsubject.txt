@@ -1,5 +1,14 @@
 C:\Zhixuan\OAI-registration\pyKNEEr-yg\reference\newsubject
 C:\Zhixuan\OAI-registration\pyKNEEr-yg\preprocessed
 r reference.mha
-m 9189303L_TP0_prep.mha
+m 9941446L_TP0_prep.mha
 m 9941446R_TP0_prep.mha
+m 9404954L_TP0_prep.mha
+m 9404954R_TP0_prep.mha
+m 9939718R_TP0_prep.mha
+m 9941231L_TP0_prep.mha
+m 9941231R_TP0_prep.mha
+m 9942030L_TP0_prep.mha
+m 9942030R_TP0_prep.mha
+m 9942724L_TP0_prep.mha
+m 9942724R_TP0_prep.mha

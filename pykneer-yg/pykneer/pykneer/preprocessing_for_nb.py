@@ -9,7 +9,7 @@ pool.map() takes care of sending one single element of the list all_image_data (
 
 """
 
-import os
+import os, shutil
 import matplotlib.pyplot as plt
 import time
 import multiprocessing
@@ -171,6 +171,9 @@ def origin_to_zero_s(image_data):
 
     # save image to *_orig.mha
     sitk.WriteImage(img, image_data["original_file_name"])
+    
+    if image_data['image_folder_file_name'][-3:] == "TP0":
+        shutil.copy(image_data["preprocessed_file_name"], '..\\..\\reference\\longitudinal')
 
     # delete temp image
     # os.remove(image_data["temp_file_name"])

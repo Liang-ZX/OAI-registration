@@ -21,6 +21,7 @@ pool.map() takes care of sending one single element of the list all_image_data (
 
 """
 
+import os, shutil
 import matplotlib.pyplot as plt
 import multiprocessing
 import numpy as np
@@ -224,6 +225,8 @@ def warp_bone_mask_s(image_data):
     mask = sitkf.levelset2binary(mask)
     mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
     sitk.WriteImage(mask, output_file_name)
+    if image_data['moving_root'][-8:-5] == "TP0":
+        shutil.copy(output_file_name, "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal")
 
 def warp_bone_mask(all_image_data, n_of_processes):
 
@@ -337,6 +340,8 @@ def warp_cartilage_mask_s(image_data):
     mask = sitkf.levelset2binary(mask)
     mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
     sitk.WriteImage(mask, output_file_name)
+    if image_data['moving_root'][-8:-5] == "TP0":
+        shutil.copy(output_file_name, "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal")
 
 def warp_cartilage_mask(all_image_data, n_of_processes):
 
@@ -452,6 +457,8 @@ def warp_vessel_mask_s(image_data):
     mask = sitkf.levelset2binary(mask)
     mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
     sitk.WriteImage(mask, output_file_name)
+    if image_data['moving_root'][-8:-5] == "TP0":
+        shutil.copy(output_file_name, "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal")
 
 def warp_vessel_mask(all_image_data, n_of_processes):
 
