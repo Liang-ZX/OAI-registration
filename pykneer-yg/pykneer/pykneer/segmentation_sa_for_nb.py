@@ -114,7 +114,8 @@ def prepare_reference(all_image_data):
 # ---------------------------------------------------------------------------------------------------------------------------
 
 def register_bone_to_reference_s(image_data):
-
+    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["current_anatomy"] + "spline_name"]):
+        return
 #    print ("-> Registering " + image_data["moving_root"])
 
     # instantiate bone class and provide bone to segment
@@ -145,7 +146,8 @@ def register_bone_to_reference(all_image_data, n_of_processes):
 
 
 def invert_bone_transformations_s(image_data):
-
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"] + "i_spline_transf_name"]):
+        return
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
     # instantiate bone class and provide bone to segment
@@ -174,6 +176,8 @@ def invert_bone_transformations(all_image_data, n_of_processes):
 
 
 def warp_bone_mask_s(image_data):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"]+"m_spline_name"]):
+        return
 
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
 
@@ -235,7 +239,8 @@ def warp_bone_mask(all_image_data, n_of_processes):
 # SEGMENTING CARTILAGE ------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 def register_cartilage_to_reference_s(image_data):
-
+    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["current_anatomy"] + "spline_transf_name"]):
+        return
 #    print ("-> Registering " + image_data["moving_root"])
 
     if image_data["registration_type"] == "newsubject" or image_data["registration_type"] == "longitudinal":
@@ -259,7 +264,8 @@ def register_cartilage_to_reference(all_image_data, n_of_processes):
 
 
 def invert_cartilage_transformations_s(image_data):
-
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"] + "i_spline_transf_name"]):
+        return
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
     if image_data["registration_type"] == "newsubject" or image_data["registration_type"] == "longitudinal":
@@ -285,7 +291,8 @@ def invert_cartilage_transformations(all_image_data, n_of_processes):
 
 
 def warp_cartilage_mask_s(image_data):
-
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"]+"m_spline_name"]):
+        return
 #    print ("-> Warping cartilage mask of " + image_data["moving_root"])
 
     # instantiate cartilage class and provide cartilage to segment
@@ -344,6 +351,8 @@ def warp_cartilage_mask(all_image_data, n_of_processes):
 # SEGMENTING VESSEL ------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 def register_vessel_to_reference_s(image_data):
+    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["current_anatomy"] + "spline_transf_name"]):
+        return
 
 #    print ("-> Registering " + image_data["moving_root"])
 
@@ -368,6 +377,8 @@ def register_vessel_to_reference(all_image_data, n_of_processes):
 
 
 def invert_vessel_transformations_s(image_data):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"] + "i_spline_transf_name"]):
+        return
 
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
@@ -394,6 +405,8 @@ def invert_vessel_transformations(all_image_data, n_of_processes):
 
 
 def warp_vessel_mask_s(image_data):
+    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["current_anatomy"]+"m_spline_name"]):
+        return
 
 #    print ("-> Warping vessel mask of " + image_data["moving_root"])
 
