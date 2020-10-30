@@ -178,6 +178,26 @@ def largestConnectComponent(bw_img):
 
     return lcc.astype(np.uint8)
 
+def show_sagittal_images(fixed_image, moving_image):
+    # Create a figure with two subplots and the specified size.
+    plt.subplots(1,2,figsize=(10,8))
+    
+    fixed_npa = sitk.GetArrayViewFromImage(fixed_image)
+    moving_npa = sitk.GetArrayViewFromImage(moving_image)
+    size = np.size(fixed_npa, 2)
+    # Draw the fixed image in the first subplot.
+    plt.subplot(1,2,1)
+    plt.imshow(fixed_npa[:,:,size//2],cmap=plt.cm.Greys_r);
+    plt.title('fixed image')
+    plt.axis('off')
+    
+    # Draw the moving image in the second subplot.
+    plt.subplot(1,2,2)
+    plt.imshow(moving_npa[:,:,size//2],cmap=plt.cm.Greys_r);
+    plt.title('moving image')
+    plt.axis('off')
+    
+    plt.show()  
 
 def show_images(fixed_image, moving_image):
     interact(vis.display_images, fixed_image_z=(0,fixed_image.GetSize()[2]-1), moving_image_z=(0,moving_image.GetSize()[2]-1), 

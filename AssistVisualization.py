@@ -27,7 +27,7 @@ def display_images(fixed_image_z, moving_image_z, fixed_npa, moving_npa):
     plt.title('moving image')
     plt.axis('off')
     
-    plt.show()
+    plt.show()  
 
 # Callback invoked by the IPython interact method for scrolling and modifying the alpha blending
 # of an image stack of two images that occupy the same physical space. 
