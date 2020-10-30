@@ -159,6 +159,10 @@ def prepare_image_and_list(caselist):
                 cascadepath = r'Y:/'+str(regtp2[tpi])+'tp29\cascade/'+str(regtp2[tpi])+'/'+pi+'/'+ei
                 cas = CASCADE(casname,cascadepath,cascadepath,0)
 
+                tmp_path = vesmaskpath + '/'+pi+side+'_TP'+str(regtp[tpi])+'_prep_fv.mha'  # modify
+                if os.path.exists(tmp_path):
+                    continue
+                
                 #very ugly here
                 vesmaskstack = []
                 for fi in range(len(filelist)):
@@ -193,8 +197,10 @@ def prepare_image_and_list(caselist):
 
                 if side == 'R':
                     vesmasksitk = flip_rl(vesmasksitk)
-
-                sitk.WriteImage(vesmasksitk, vesmaskpath + '/'+pi+side+'_TP'+str(regtp[tpi])+'_prep_fv.mha')
+                
+                sitk.WriteImage(vesmasksitk, tmp_path)
+                if regtp[tpi] == 0:
+                    shutil.copy(tmp_path, "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal")
 
     list_file.close()
     subject_file.close()
