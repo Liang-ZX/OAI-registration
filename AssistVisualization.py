@@ -40,6 +40,16 @@ def display_images_with_alpha(image_z, alpha, fixed, moving):
     # plt.imshow(sitk.GetArrayViewFromImage(img),cmap=plt.cm.Greys_r);
     plt.axis('off')
     plt.show()
+
+def display_images_with_mask(image_z, fixed, moving):
+    # img = (1.0 - alpha)*fixed[:,:,image_z] + alpha*moving[:,:,image_z]
+    fixed = sitk.GetArrayFromImage(fixed)
+    moving = sitk.GetArrayFromImage(moving) # mask
+    dst = fixed[image_z,:,:]*0.5+moving[image_z,:,:]*0.5*255
+    plt.imshow(dst, cmap=plt.cm.Greys_r)
+    # plt.imshow(sitk.GetArrayViewFromImage(img),cmap=plt.cm.Greys_r);
+    plt.axis('off')
+    plt.show()
     
 # Callback invoked when the StartEvent happens, sets up our new data.
 def start_plot():

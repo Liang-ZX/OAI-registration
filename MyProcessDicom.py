@@ -199,6 +199,10 @@ def show_sagittal_images(fixed_image, moving_image):
     
     plt.show()  
 
+def show_masked_images(image, mask):
+    interact(vis.display_images_with_mask, image_z=(0,image.GetSize()[2] - 1), 
+             fixed = fixed(image), moving=fixed(mask));
+    
 def show_images(fixed_image, moving_image):
     interact(vis.display_images, fixed_image_z=(0,fixed_image.GetSize()[2]-1), moving_image_z=(0,moving_image.GetSize()[2]-1), 
          fixed_npa = fixed(sitk.GetArrayViewFromImage(fixed_image)), moving_npa=fixed(sitk.GetArrayViewFromImage(moving_image)));
