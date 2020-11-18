@@ -105,11 +105,11 @@ class registration(ABC):
 
         anatomy                      = image_data["bone"]
         reference_mask_name          = image_data["reference_folder"] + image_data[anatomy + "mask_file_name"]
-        reference_mask_name[-5] = 't'
+        reference_mask_name = reference_mask_name[:-5] + 't' + reference_mask_name[-4:]
         reference_mask_dil_name      = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
-        reference_mask_dil_name[-8] = 't'
+        reference_mask_dil_name = reference_mask_dil_name[:-8] + 't' + reference_mask_dil_name[-7:]
         reference_mask_levelset_name = image_data["reference_folder"] + image_data[anatomy + "levelset_mask_file_name"]
-        reference_mask_levelset_name[-14] = 't'
+        reference_mask_levelset_name = reference_mask_levelset_name[:-14] + 't' + reference_mask_levelset_name[-13:]
         radius                       = image_data["dilate_radius"]
 
         # dilate mask
@@ -573,13 +573,13 @@ class bone (registration):
         # input mask name
         if image_data["registration_type"] == "newsubject":
             mask_to_warp          = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"]
-            mask_to_warp[0] = 't'
+            mask_to_warp = 't' + mask_to_warp[1:]
         elif image_data["registration_type"] == "multimodal":
             mask_to_warp          = image_data["reference_folder"]        + image_data[anatomy+"levelset_mask_file_name"]
-            mask_to_warp[-14] = 't'
+            mask_to_warp = mask_to_warp[:-14] + 't' + mask_to_warp[-13:]
         elif image_data["registration_type"] == "longitudinal":
             mask_to_warp          = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]
-            mask_to_warp[0] = 't'
+            mask_to_warp = 't' + mask_to_warp[1:]
         
         # tranformation
         transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
@@ -604,7 +604,7 @@ class bone (registration):
             return
         else:
             tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
-            tibia_name[0] = 't'
+            tibia_name = 't' + tibia_name[1:]
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
@@ -614,7 +614,7 @@ class bone (registration):
         anatomy                   = image_data["current_anatomy"]
         # input mask name
         mask_to_warp              = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]
-        mask_to_warp[0] = 't'
+        mask_to_warp = 't' + mask_to_warp[1:]
         # tranformation
         transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_transf_name"]
         # output folder
@@ -638,7 +638,7 @@ class bone (registration):
             return
         else:
             tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"]
-            tibia_name[0] = 't'
+            tibia_name = 't' + tibia_name[1:]
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
@@ -648,7 +648,7 @@ class bone (registration):
         anatomy                   = image_data["current_anatomy"]
         # input mask name
         mask_to_warp              = image_data["reference_folder"] + image_data[anatomy + "levelset_mask_file_name"]
-        mask_to_warp[-14] = 't'
+        mask_to_warp = mask_to_warp[:-14] + 't' + mask_to_warp[-13:]
         # tranformation
         transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_transf_name"]
         # output folder
@@ -672,7 +672,7 @@ class bone (registration):
             return
         else:
             tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]
-            tibia_name[0] = 't'
+            tibia_name = 't' + tibia_name[1:]
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
