@@ -100,6 +100,30 @@ class registration(ABC):
             maskLS = sitkf.binary2levelset(mask)
             sitk.WriteImage(maskLS, reference_mask_levelset_name)
 
+            
+    def prepare_tibia_reference(self, image_data):
+
+        anatomy                      = image_data["bone"]
+        reference_mask_name          = image_data["reference_folder"] + image_data[anatomy + "mask_file_name"]
+        reference_mask_name[-5] = 't'
+        reference_mask_dil_name      = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        reference_mask_dil_name[-8] = 't'
+        reference_mask_levelset_name = image_data["reference_folder"] + image_data[anatomy + "levelset_mask_file_name"]
+        reference_mask_levelset_name[-14] = 't'
+        radius                       = image_data["dilate_radius"]
+
+        # dilate mask
+        if not os.path.isfile(reference_mask_dil_name):
+            mask    = sitk.ReadImage(reference_mask_name)
+            maskDil = sitkf.dilate_mask(mask, radius)
+            sitk.WriteImage(maskDil, reference_mask_dil_name)
+
+        # convert mask from binary to levelset for warping
+        if not os.path.isfile(reference_mask_levelset_name):
+            mask   = sitk.ReadImage(reference_mask_name)
+            maskLS = sitkf.binary2levelset(mask)
+            sitk.WriteImage(maskLS, reference_mask_levelset_name)
+
 
     def modify_transformation(self, image_data, transformation): 
         """
@@ -542,7 +566,114 @@ class bone (registration):
             os.rename(image_data["registered_sub_folder"] + "deformationField.mha",
                       image_data["registered_folder"]    + image_data["vector_field_name"])
 
+    
+    def tibia_t_rigid(self, image_data):
+        # anatomy
+        anatomy                   = image_data["current_anatomy"]
+        # input mask name
+        if image_data["registration_type"] == "newsubject":
+            mask_to_warp          = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"]
+            mask_to_warp[0] = 't'
+        elif image_data["registration_type"] == "multimodal":
+            mask_to_warp          = image_data["reference_folder"]        + image_data[anatomy+"levelset_mask_file_name"]
+            mask_to_warp[-14] = 't'
+        elif image_data["registration_type"] == "longitudinal":
+            mask_to_warp          = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]
+            mask_to_warp[0] = 't'
+        
+        # tranformation
+        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
+        # output folder
+        output_folder             = image_data["i_registered_sub_folder"]
+        # transformix path
+        complete_transformix_path = image_data["complete_transformix_path"]
 
+        # execute transformation
+        #print ("     Rigid warping")
+        cmd = [complete_transformix_path, "-in",  os.path.abspath(mask_to_warp),
+                                          "-tp",  os.path.abspath(transformation),
+                                          "-out", os.path.abspath(output_folder)]
+        elastix_path              = image_data["elastix_folder"]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["i_registered_sub_folder"] + "result.mha"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_t_rigid()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
+            tibia_name[0] = 't'
+            os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
+
+
+    def tibia_t_similarity(self, image_data):
+
+        # anatomy
+        anatomy                   = image_data["current_anatomy"]
+        # input mask name
+        mask_to_warp              = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]
+        mask_to_warp[0] = 't'
+        # tranformation
+        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_transf_name"]
+        # output folder
+        output_folder             = image_data["i_registered_sub_folder"]
+        # transformix path
+        elastix_path              = image_data["elastix_folder"]
+        complete_transformix_path = image_data["complete_transformix_path"]
+
+        # execute transformation
+        #print ("     Similarity warping")
+        cmd = [complete_transformix_path, "-in",  os.path.abspath(mask_to_warp),
+                                          "-tp",  os.path.abspath(transformation),
+                                          "-out", os.path.abspath(output_folder)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["i_registered_sub_folder"] + "result.mha"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.t_similarity()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"]
+            tibia_name[0] = 't'
+            os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
+
+
+    def tibia_t_spline(self, image_data):
+
+        # anatomy
+        anatomy                   = image_data["current_anatomy"]
+        # input mask name
+        mask_to_warp              = image_data["reference_folder"] + image_data[anatomy + "levelset_mask_file_name"]
+        mask_to_warp[-14] = 't'
+        # tranformation
+        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_transf_name"]
+        # output folder
+        output_folder             = image_data["i_registered_sub_folder"]
+        # transformix path
+        elastix_path              = image_data["elastix_folder"]
+        complete_transformix_path = image_data["complete_transformix_path"]
+
+        # execute transformation
+        #print ("     Spline warping")
+        cmd = [complete_transformix_path, "-in",  os.path.abspath(mask_to_warp),
+                                          "-tp",  os.path.abspath(transformation),
+                                          "-out", os.path.abspath(output_folder)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output name
+        if not os.path.exists(image_data["i_registered_sub_folder"] + "result.mha"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.t_spline()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]
+            tibia_name[0] = 't'
+            os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------

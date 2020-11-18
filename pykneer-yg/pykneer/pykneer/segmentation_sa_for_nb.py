@@ -71,6 +71,7 @@ def prepare_reference(all_image_data):
         image_data["current_anatomy"] = image_data["bone"]
         bone = elastix_transformix.bone()
         bone.prepare_reference (image_data)
+        bone.prepare_tibia_reference (image_data)
 
         # instanciate cartilage class and prepare reference
         image_data["current_anatomy"] = image_data["cartilage"]
@@ -95,6 +96,7 @@ def prepare_reference(all_image_data):
             image_data["current_anatomy"] = image_data["bone"]
             bone = elastix_transformix.bone()
             bone.prepare_reference (image_data)
+            bone.prepare_tibia_reference (image_data)
 
             # instanciate cartilage class and prepare reference
             image_data["current_anatomy"] = image_data["cartilage"]
@@ -177,7 +179,7 @@ def invert_bone_transformations(all_image_data, n_of_processes):
 
 
 def warp_bone_mask_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["bone"]+"m_spline_name"]):
+    if os.path.exists(image_data["segmented_folder"] + image_data[image_data["current_anatomy"] + "mask"]):
         return
 
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
@@ -233,6 +235,71 @@ def warp_bone_mask(all_image_data, n_of_processes):
     start_time = time.time()
     pool = multiprocessing.Pool(processes=n_of_processes)
     pool.map(warp_bone_mask_s, all_image_data)
+    print ("-> Warping completed")
+    print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
+    
+    
+def warp_tibia_mask_s(image_data):
+    tibia_file_name = image_data["segmented_folder"]        + image_data[anatomy + "mask"]
+    tibia_file_name[-5] = 't'
+    if os.path.exists(tibia_file_name):
+        return
+
+#    print ("-> Warping bone mask of " + image_data["moving_root"])
+
+    # instantiate bone class and provide bone to segment
+    image_data["current_anatomy"] = image_data["bone"]
+    bone = elastix_transformix.bone()
+
+    # get moving image properties (size and spacing for modify_transformation(rigid) and transformix)
+    moving_name  = image_data["moving_folder"] + image_data["moving_name"]
+    moving_image = sitk.ReadImage(moving_name)
+    image_data["image_size"]      = moving_image.GetSize()
+    image_data["image_spacing"]   = moving_image.GetSpacing()
+
+    # modify transformations for mask warping
+    if image_data["registration_type"] == "newsubject":
+        bone.modify_transformation(image_data,"rigid")
+        bone.modify_transformation(image_data,"similarity")
+        bone.modify_transformation(image_data,"spline")
+    elif image_data["registration_type"] == "longitudinal":
+        bone.modify_transformation(image_data,"rigid")
+        bone.modify_transformation(image_data,"spline")
+    elif image_data["registration_type"] == "multimodal":
+        #change filename of something
+        bone.modify_transformation(image_data,"rigid")
+
+    # warp mask
+    if image_data["registration_type"]   == "newsubject":
+        bone.tibia_t_spline    (image_data)
+        bone.tibia_t_similarity(image_data)
+        bone.tibia_t_rigid     (image_data)
+    elif image_data["registration_type"] == "longitudinal":
+        bone.tibia_t_spline    (image_data)
+        # change filename of something
+        bone.tibia_t_rigid     (image_data)
+    elif image_data["registration_type"] == "multimodal":
+        # change filename of something
+        bone.tibia_t_rigid     (image_data)
+
+    # levelsets to binary
+    anatomy          = image_data["current_anatomy"]
+    input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
+    input_file_name[0] = 't'
+    output_file_name = image_data["segmented_folder"]        + image_data[anatomy + "mask"]
+    output_file_name[-5] = 't'
+    mask = sitk.ReadImage(input_file_name)
+    mask = sitkf.levelset2binary(mask)
+    mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
+    sitk.WriteImage(mask, output_file_name)
+    if image_data['moving_root'][-8:-5] == "TP0":
+        shutil.copy(output_file_name, "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal")
+
+def warp_tibia_mask(all_image_data, n_of_processes):
+
+    start_time = time.time()
+    pool = multiprocessing.Pool(processes=n_of_processes)
+    pool.map(warp_tibia_mask_s, all_image_data)
     print ("-> Warping completed")
     print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
 
