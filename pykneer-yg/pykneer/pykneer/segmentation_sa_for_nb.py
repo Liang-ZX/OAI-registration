@@ -179,9 +179,8 @@ def invert_bone_transformations(all_image_data, n_of_processes):
 
 
 def warp_bone_mask_s(image_data):
-    if os.path.exists(image_data["segmented_folder"] + image_data[image_data["current_anatomy"] + "mask"]):
+    if os.path.exists(image_data["segmented_folder"] + image_data[image_data["bone"] + "mask"]):
         return
-
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
 
     # instantiate bone class and provide bone to segment
@@ -240,9 +239,9 @@ def warp_bone_mask(all_image_data, n_of_processes):
     
     
 def warp_tibia_mask_s(image_data):
-    tibia_file_name = image_data["segmented_folder"]        + image_data[anatomy + "mask"]
+    tibia_file_name = image_data[image_data["bone"] + "mask"]
     tibia_file_name = tibia_file_name[:-5] + 't' + tibia_file_name[-4:]
-    if os.path.exists(tibia_file_name):
+    if os.path.exists(image_data["segmented_folder"] + tibia_file_name):
         return
 
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
@@ -284,10 +283,10 @@ def warp_tibia_mask_s(image_data):
 
     # levelsets to binary
     anatomy          = image_data["current_anatomy"]
-    input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
-    input_file_name = 't' + input_file_name[1:]
-    output_file_name = image_data["segmented_folder"]        + image_data[anatomy + "mask"]
+    input_file_name  = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:]
+    output_file_name = image_data[anatomy + "mask"]
     output_file_name = output_file_name[:-5] + 't' + output_file_name[-4:]
+    output_file_name = image_data["segmented_folder"] + output_file_name
     mask = sitk.ReadImage(input_file_name)
     mask = sitkf.levelset2binary(mask)
     mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
