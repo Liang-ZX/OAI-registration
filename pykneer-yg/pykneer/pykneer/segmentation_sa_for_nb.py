@@ -214,6 +214,22 @@ def warp_bone_mask_s(image_data):
         bone.t_similarity(image_data)
         bone.t_rigid     (image_data)
     elif image_data["registration_type"] == "longitudinal":
+        #############################################################################
+        # rigid only
+        image_data["registration_type"] = "multimodal"
+        bone.t_rigid     (image_data)
+        anatomy          = image_data["current_anatomy"]
+        input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
+        output_file_name = image_data[anatomy + "mask"]
+        output_file_name = output_file_name[:-4] + '_rigid' + output_file_name[-4:]
+        output_file_name = image_data["segmented_folder"] + output_file_name
+        mask = sitk.ReadImage(input_file_name)
+        mask = sitkf.levelset2binary(mask)
+        mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
+        sitk.WriteImage(mask, output_file_name)
+        #############################################################################
+        # rigid + spline
+        image_data["registration_type"] = "longitudinal"
         bone.t_spline    (image_data)
         # change filename of something
         bone.t_rigid     (image_data)
