@@ -19,7 +19,7 @@ import cv2
 def resample_image(fixed_image, space=None):
     if space is not None:
         isoresample = sitk.ResampleImageFilter()
-        isoresample.SetInterpolator(sitk.sitkBSpline)
+        isoresample.SetInterpolator(sitk.sitkBSpline) # NearestNeighbor
         isoresample.SetOutputDirection(fixed_image.GetDirection())
         isoresample.SetOutputOrigin(fixed_image.GetOrigin())
         orig_size = np.array(fixed_image.GetSize(), dtype=np.int)    
@@ -48,7 +48,24 @@ def resample_image(fixed_image, space=None):
         isoresample.SetSize(new_size)
         return isoresample.Execute(fixed_image)
 
+    
+def resample_bwimage(fixed_image):
+    isoresample = sitk.ResampleImageFilter()
+    isoresample.SetInterpolator(sitk.sitkNearestNeighbor)
+    isoresample.SetOutputDirection(fixed_image.GetDirection())
+    isoresample.SetOutputOrigin(fixed_image.GetOrigin())
+    orig_spacing = fixed_image.GetSpacing()
+    new_spacing = (orig_spacing[0],orig_spacing[0],orig_spacing[0])
+    isoresample.SetOutputSpacing(new_spacing)
+    orig_size = np.array(fixed_image.GetSize(), dtype=np.int)    
+    new_size = orig_size.copy()
+    new_size[2] = int(orig_size[2]*(orig_spacing[2]/orig_spacing[0])+0.5)
+    new_size = [int(s) for s in new_size]
+    print(orig_size, new_size)
+    isoresample.SetSize(new_size)
+    return isoresample.Execute(fixed_image)
 
+    
 def adaptive_thresh(images):
     new_images = []
     for z in range(images.GetDepth()):
