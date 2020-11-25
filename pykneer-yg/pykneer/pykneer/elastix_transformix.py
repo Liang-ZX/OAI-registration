@@ -568,7 +568,270 @@ class bone (registration):
         else:
             os.rename(image_data["registered_sub_folder"] + "deformationField.mha",
                       image_data["registered_folder"]    + image_data["vector_field_name"])
+    
+    
+    def tibia_rigid(self, image_data):
+        # anatomy
+        anatomy                          = image_data["current_anatomy"]
+        # input image names
+        complete_reference_name          = image_data["reference_folder"] + image_data["reference_name"]
+        complete_reference_mask_dil_name = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        complete_reference_mask_dil_name = complete_reference_mask_dil_name[:-8] + 't' + complete_reference_mask_dil_name[-7:]
+        complete_moving_name             = image_data["moving_folder"]    + image_data["moving_name"]
+        # parameters
+        params                           = image_data["param_file_rigid"]
+        # output folder
+        output_folder                    = image_data["registered_sub_folder"]
+        # elastix path
+        elastix_path                     = image_data["elastix_folder"]
+        complete_elastix_path            = image_data["complete_elastix_path"]
 
+        # execute registration
+        # print ("     Rigid registration")
+        # os.path.abspath because working directory is where elastix is in pykneer, so images need whole path, not only relative
+        cmd = [complete_elastix_path, "-f",     os.path.abspath(complete_reference_name),
+                                      "-fMask", os.path.abspath(complete_reference_mask_dil_name),
+                                      "-m",     os.path.abspath(complete_moving_name),
+                                      "-p",     os.path.abspath(params),
+                                      "-out",   os.path.abspath(output_folder)]
+
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # check if the registration worked
+        # if the registration did not work
+        if not os.path.exists(image_data["registered_sub_folder"] + "result.0.mha"):
+            print("-------------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_rigid()")
+            print("-------------------------------------------------------------------------------------------")
+            
+            # print out possible errors
+            # elastix not in system
+            output = test_elastix()
+            if output == 0:
+                print ("-> elastix correctly installed")
+                print ("complete_elastix_path           : " + complete_elastix_path)
+                print ("complete_reference_name         : " + complete_reference_name)
+                print ("complete_reference_mask_dil_name: " + complete_reference_mask_dil_name)
+                print ("complete_moving_name            : " + complete_moving_name)
+                print ("params                          : " + params)
+                print ("output_folder                   : " + output_folder)
+            else: 
+                print ("-> elastix not installed. Error message is: " + output)
+                print ("   You might need to set Elastix environmental variables separately. To do so, go to pyKNEEr documentation here: https://sbonaretti.github.io/pyKNEEr/faq.html#elastix")
+            
+            
+            
+            
+            return
+        # change output names
+        else:
+            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:])
+            tibia_name = image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"]
+            tibia_name = tibia_name[:-11] + 't' + tibia_name[-10:]
+            os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
+
+
+    def tibia_similarity(self, image_data):
+        # anatomy
+        anatomy                          = image_data["current_anatomy"]
+        # input image names
+        complete_reference_name          = image_data["reference_folder"]      + image_data["reference_name"]
+        complete_reference_mask_dil_name = image_data["reference_folder"]      + image_data[anatomy + "dil_mask_file_name"]
+        complete_reference_mask_dil_name = complete_reference_mask_dil_name[:-8] + 't' + complete_reference_mask_dil_name[-7:]
+        complete_moving_name             = image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:]
+        # parameters
+        params                           = image_data["param_file_similarity"]
+        # output folder
+        output_folder                    = image_data["registered_sub_folder"]
+        # elastix path
+        elastix_path                     = image_data["elastix_folder"]
+        complete_elastix_path            = image_data["complete_elastix_path"]
+
+        # execute registration
+        #print ("     Similarity registration")
+        cmd = [complete_elastix_path, "-f",     os.path.abspath(complete_reference_name),
+                                      "-fMask", os.path.abspath(complete_reference_mask_dil_name),
+                                      "-m",     os.path.abspath(complete_moving_name),
+                                      "-p",     os.path.abspath(params),
+                                      "-out",   os.path.abspath(output_folder)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["registered_sub_folder"] + "result.0.mha"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_similarity()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "similarity_name"][1:])
+            tibia_name = image_data["registered_sub_folder"] + image_data[anatomy + "similarity_transf_name"]
+            tibia_name = tibia_name[:-16] + 't' + tibia_name[-15:]
+            os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
+
+
+    def tibia_spline(self, image_data):
+        # anatomy
+        anatomy                          = image_data["current_anatomy"]
+        # input image names
+        complete_reference_name          = image_data["reference_folder"] + image_data["reference_name"]
+        complete_reference_mask_dil_name = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        complete_reference_mask_dil_name = complete_reference_mask_dil_name[:-8] + 't' + complete_reference_mask_dil_name[-7:]
+        if image_data["registration_type"] == "newsubject" or image_data["registration_type"] == "multimodal":
+            complete_moving_name         = image_data["registered_sub_folder"] + 't' + image_data[anatomy + "similarity_name"][1:]
+        elif image_data["registration_type"] == "longitudinal":
+            complete_moving_name         = image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:]
+        # parameters
+        params                           = image_data["param_file_spline"]
+        # output folder
+        output_folder                    = image_data["registered_sub_folder"]
+        # elastix path
+        elastix_path                     = image_data["elastix_folder"]
+        complete_elastix_path            = image_data["complete_elastix_path"]
+
+        # execute registration
+        #print ("     Spline registration")
+        cmd = [complete_elastix_path, "-f",     os.path.abspath(complete_reference_name),
+                                      "-fMask", os.path.abspath(complete_reference_mask_dil_name),
+                                      "-m",     os.path.abspath(complete_moving_name),
+                                      "-p",     os.path.abspath(params),
+                                      "-out",   os.path.abspath(output_folder)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["registered_sub_folder"] + "result.0.mha"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_spline()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "spline_name"][1:])
+            tibia_name = image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"]
+            tibia_name = tibia_name[:-12] + 't' + tibia_name[-11:]
+            os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
+    
+    
+    def tibia_i_rigid(self, image_data):
+        # anatomy
+        anatomy                          = image_data["current_anatomy"]
+        # input image names
+        complete_reference_name          = image_data["reference_folder"] + image_data["reference_name"]
+        complete_reference_mask_dil_name = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        complete_reference_mask_dil_name = complete_reference_mask_dil_name[:-8] + 't' + complete_reference_mask_dil_name[-7:]
+        # parameters
+        params                           = image_data["i_param_file_rigid"]
+        # tranformation
+        transformation                   = image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"]
+        transformation = transformation[:-11] + 't' + transformation[-10:]
+        # output folder   
+        output_folder                    = image_data["i_registered_sub_folder"]
+        # elastix path
+        elastix_path                     = image_data["elastix_folder"]
+        complete_elastix_path            = image_data["complete_elastix_path"]
+
+        # execute registration
+        #print ("     Inverting rigid transformation")
+        cmd = [complete_elastix_path, "-f",     os.path.abspath(complete_reference_name),
+                                      "-fMask", os.path.abspath(complete_reference_mask_dil_name),
+                                      "-m",     os.path.abspath(complete_reference_name),
+                                      "-p",     os.path.abspath(params),
+                                      "-out",   os.path.abspath(output_folder),
+                                      "-t0",    os.path.abspath(transformation)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_i_rigid()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"]
+            tibia_name = tibia_name[:-11] + 't' + tibia_name[-10:]
+            os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
+
+
+    def tibia_i_similarity(self, image_data):
+        # anatomy
+        anatomy                          = image_data["current_anatomy"]
+        # input image names
+        complete_reference_name          = image_data["reference_folder"] + image_data["reference_name"]
+        complete_reference_mask_dil_name = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        complete_reference_mask_dil_name = complete_reference_mask_dil_name[:-8] + 't' + complete_reference_mask_dil_name[-7:]
+        # parameters
+        params                           = image_data["i_param_file_similarity"]
+         # tranformation
+        transformation                   = image_data["registered_sub_folder"] + image_data[anatomy + "similarity_transf_name"]
+        transformation = transformation[:-16] + 't' + transformation[-15:]
+        # output folder
+        output_folder                    = image_data["i_registered_sub_folder"]
+        # elastix path
+        elastix_path                     = image_data["elastix_folder"]
+        complete_elastix_path            = image_data["complete_elastix_path"]
+
+        # execute registration
+        #print ("     Inverting similarity transformation")
+        cmd = [complete_elastix_path, "-f",     os.path.abspath(complete_reference_name),
+                                      "-fMask", os.path.abspath(complete_reference_mask_dil_name),
+                                      "-m",     os.path.abspath(complete_reference_name),
+                                      "-p",     os.path.abspath(params),
+                                      "-out",   os.path.abspath(output_folder),
+                                      "-t0",    os.path.abspath(transformation)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_i_similarity()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_similarity_transf_name"]
+            tibia_name = tibia_name[:-16] + 't' + tibia_name[-15:]
+            os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
+
+
+    def tibia_i_spline(self, image_data):
+        # anatomy
+        anatomy                          = image_data["current_anatomy"]
+        # input image names
+        complete_reference_name          = image_data["reference_folder"] + image_data["reference_name"]
+        complete_reference_mask_dil_name = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        complete_reference_mask_dil_name = complete_reference_mask_dil_name[:-8] + 't' + complete_reference_mask_dil_name[-7:]
+        # parameters
+        params                           = image_data["i_param_file_spline"]
+        # tranformation
+        transformation                   = image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"]
+        transformation = transformation[:-12] + 't' + transformation[-11:]
+        # output folder
+        output_folder                    = image_data["i_registered_sub_folder"]
+        # elastix path
+        elastix_path                     = image_data["elastix_folder"]
+        complete_elastix_path            = image_data["complete_elastix_path"]
+
+        # execute registration
+        #print ("     Inverting spline transformation")
+        cmd = [complete_elastix_path, "-f",     os.path.abspath(complete_reference_name),
+                                      "-fMask", os.path.abspath(complete_reference_mask_dil_name),
+                                      "-m",     os.path.abspath(complete_reference_name),
+                                      "-p",     os.path.abspath(params),
+                                      "-out",   os.path.abspath(output_folder),
+                                      "-t0",    os.path.abspath(transformation)]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.tibia_i_spline()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"]
+            tibia_name = tibia_name[:-12] + 't' + tibia_name[-11:]
+            os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
+    
     
     def tibia_t_rigid(self, image_data):
         # anatomy

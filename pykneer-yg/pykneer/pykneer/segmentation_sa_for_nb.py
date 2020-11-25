@@ -117,8 +117,8 @@ def prepare_reference(all_image_data):
 # ---------------------------------------------------------------------------------------------------------------------------
 
 def register_bone_to_reference_s(image_data):
-    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["bone"] + "spline_name"]):
-        return
+#     if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["bone"] + "spline_name"]):
+#         return
 #    print ("-> Registering " + image_data["moving_root"])
 
     # instantiate bone class and provide bone to segment
@@ -149,8 +149,11 @@ def register_bone_to_reference(all_image_data, n_of_processes):
 
 
 def invert_bone_transformations_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["bone"] + "i_spline_transf_name"]):
-        return
+#     bone_file_name = image_data[image_data["bone"] + "i_spline_transf_name"]
+#     if image_data["registration_type"] == "multimodal":
+#         bone_file_name = image_data[image_data["bone"] + "i_rigid_transf_name"]
+#     if os.path.exists(image_data["i_registered_sub_folder"] + bone_file_name):
+#         return
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
     # instantiate bone class and provide bone to segment
@@ -179,8 +182,8 @@ def invert_bone_transformations(all_image_data, n_of_processes):
 
 
 def warp_bone_mask_s(image_data):
-    if os.path.exists(image_data["segmented_folder"] + image_data[image_data["bone"] + "mask"]):
-        return
+#     if os.path.exists(image_data["segmented_folder"] + image_data[image_data["bone"] + "mask"]):
+#         return
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
 
     # instantiate bone class and provide bone to segment
@@ -237,12 +240,78 @@ def warp_bone_mask(all_image_data, n_of_processes):
     print ("-> Warping completed")
     print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
     
+
+def register_tibia_to_reference_s(image_data):
+#     if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["bone"] + "spline_name"]):
+#         return
+#    print ("-> Registering " + image_data["moving_root"])
+
+    # instantiate bone class and provide bone to segment
+    image_data["current_anatomy"] = image_data["bone"]
+    bone = elastix_transformix.bone()
+
+    # register
+    if image_data["registration_type"] == "newsubject":
+        bone.tibia_rigid     (image_data)
+        bone.tibia_similarity(image_data)
+        bone.tibia_spline    (image_data)
+    elif image_data["registration_type"] == "longitudinal":
+        bone.tibia_rigid     (image_data)
+        bone.tibia_spline(image_data)
+    elif image_data["registration_type"] == "multimodal":
+        bone.tibia_rigid     (image_data)
+
+
+def register_tibia_to_reference(all_image_data, n_of_processes):
+
+    # print
+    start_time = time.time()
+    pool = multiprocessing.Pool(processes=n_of_processes)
+    pool.map(register_tibia_to_reference_s, all_image_data)
+    print ("-> Registration completed")
+    print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
+
+
+
+def invert_tibia_transformations_s(image_data):
+#     tibia_file_name = image_data[image_data["bone"] + "i_spline_transf_name"]
+#     if image_data["registration_type"] == "multimodal":
+#         tibia_file_name = image_data[image_data["bone"] + "i_rigid_transf_name"]
+#     tibia_file_name = tibia_file_name[:-12] + 't' + tibia_file_name[-11:]
+#     if os.path.exists(image_data["i_registered_sub_folder"] + tibia_file_name):
+#         return
+
+#    print ("-> Inverting transformation of " + image_data["moving_root"])
+
+    # instantiate bone class and provide bone to segment
+    image_data["current_anatomy"] = image_data["bone"]
+    bone = elastix_transformix.bone()
+
+    # invert transformations
+    if image_data["registration_type"] == "newsubject":
+        bone.tibia_i_rigid     (image_data)
+        bone.tibia_i_similarity(image_data)
+        bone.tibia_i_spline    (image_data)
+    elif image_data["registration_type"] == "longitudinal":
+        bone.tibia_i_rigid     (image_data)
+        bone.tibia_i_spline    (image_data)
+    elif image_data["registration_type"] == "multimodal":
+        bone.tibia_i_rigid     (image_data)
+
+def invert_tibia_transformations(all_image_data, n_of_processes):
+
+    start_time = time.time()
+    pool = multiprocessing.Pool(processes=n_of_processes)
+    pool.map(invert_tibia_transformations_s, all_image_data)
+    print ("-> Inversion completed")
+    print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
+    
     
 def warp_tibia_mask_s(image_data):
-    tibia_file_name = image_data[image_data["bone"] + "mask"]
-    tibia_file_name = tibia_file_name[:-5] + 't' + tibia_file_name[-4:]
-    if os.path.exists(image_data["segmented_folder"] + tibia_file_name):
-        return
+#     tibia_file_name = image_data[image_data["bone"] + "mask"]
+#     tibia_file_name = tibia_file_name[:-5] + 't' + tibia_file_name[-4:]
+#     if os.path.exists(image_data["segmented_folder"] + tibia_file_name):
+#         return
 
 #    print ("-> Warping bone mask of " + image_data["moving_root"])
 
@@ -274,9 +343,26 @@ def warp_tibia_mask_s(image_data):
         bone.tibia_t_similarity(image_data)
         bone.tibia_t_rigid     (image_data)
     elif image_data["registration_type"] == "longitudinal":
+        #############################################################################
+        # rigid only
+        image_data["registration_type"] = "multimodal"
+        bone.tibia_t_rigid     (image_data)
+        anatomy          = image_data["current_anatomy"]
+        input_file_name  = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:]
+        output_file_name = image_data[anatomy + "mask"]
+        output_file_name = output_file_name[:-5] + 't_rigid' + output_file_name[-4:]
+        output_file_name = image_data["segmented_folder"] + output_file_name
+        mask = sitk.ReadImage(input_file_name)
+        mask = sitkf.levelset2binary(mask)
+        mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
+        sitk.WriteImage(mask, output_file_name)
+        #############################################################################
+        # rigid + spline
+        image_data["registration_type"] = "longitudinal"       
         bone.tibia_t_spline    (image_data)
         # change filename of something
         bone.tibia_t_rigid     (image_data)
+        
     elif image_data["registration_type"] == "multimodal":
         # change filename of something
         bone.tibia_t_rigid     (image_data)
@@ -308,8 +394,8 @@ def warp_tibia_mask(all_image_data, n_of_processes):
 # SEGMENTING CARTILAGE ------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
 def register_cartilage_to_reference_s(image_data):
-    if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["cartilage"] + "spline_transf_name"]):
-        return
+#     if os.path.exists(image_data["registered_sub_folder"] + image_data[image_data["cartilage"] + "spline_transf_name"]):
+#         return
 #    print ("-> Registering " + image_data["moving_root"])
 
     if image_data["registration_type"] == "newsubject" or image_data["registration_type"] == "longitudinal":
@@ -333,8 +419,8 @@ def register_cartilage_to_reference(all_image_data, n_of_processes):
 
 
 def invert_cartilage_transformations_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["cartilage"] + "i_spline_transf_name"]):
-        return
+#     if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["cartilage"] + "i_spline_transf_name"]):
+#         return
 #    print ("-> Inverting transformation of " + image_data["moving_root"])
 
     if image_data["registration_type"] == "newsubject" or image_data["registration_type"] == "longitudinal":
@@ -360,8 +446,8 @@ def invert_cartilage_transformations(all_image_data, n_of_processes):
 
 
 def warp_cartilage_mask_s(image_data):
-    if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["cartilage"]+"m_spline_name"]):
-        return
+#     if os.path.exists(image_data["i_registered_sub_folder"] + image_data[image_data["cartilage"]+"m_spline_name"]):
+#         return
 #    print ("-> Warping cartilage mask of " + image_data["moving_root"])
 
     # instantiate cartilage class and provide cartilage to segment
