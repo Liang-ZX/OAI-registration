@@ -216,17 +216,23 @@ def warp_bone_mask_s(image_data):
     elif image_data["registration_type"] == "longitudinal":
         #############################################################################
         # rigid only
-        image_data["registration_type"] = "multimodal"
-        bone.t_rigid     (image_data)
         anatomy          = image_data["current_anatomy"]
-        input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
         output_file_name = image_data[anatomy + "mask"]
         output_file_name = output_file_name[:-4] + '_rigid' + output_file_name[-4:]
         output_file_name = image_data["segmented_folder"] + output_file_name
+        if os.path.exists(output_file_name):
+            return
+        if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_name"]):
+            os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
+            os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_name"])
+        image_data["registration_type"] = "multimodal"
+        bone.t_rigid     (image_data)
+        input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]
         mask = sitk.ReadImage(input_file_name)
         mask = sitkf.levelset2binary(mask)
         mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
         sitk.WriteImage(mask, output_file_name)
+        os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
         #############################################################################
         # rigid + spline
         image_data["registration_type"] = "longitudinal"
@@ -361,17 +367,24 @@ def warp_tibia_mask_s(image_data):
     elif image_data["registration_type"] == "longitudinal":
         #############################################################################
         # rigid only
-        image_data["registration_type"] = "multimodal"
-        bone.tibia_t_rigid     (image_data)
         anatomy          = image_data["current_anatomy"]
-        input_file_name  = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:]
         output_file_name = image_data[anatomy + "mask"]
+        output_tmp_name = output_file_name[:-5] + 't' + output_file_name[-4:]
         output_file_name = output_file_name[:-5] + 't_rigid' + output_file_name[-4:]
         output_file_name = image_data["segmented_folder"] + output_file_name
+        if os.path.exists(output_file_name) and os.path.exists(image_data["segmented_folder"]+output_tmp_name):
+            return
+        if os.path.exists(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_spline_name"][1:]):
+            os.remove(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:])
+            os.remove(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_spline_name"][1:])
+        image_data["registration_type"] = "multimodal"
+        bone.tibia_t_rigid     (image_data)
+        input_file_name  = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:]
         mask = sitk.ReadImage(input_file_name)
         mask = sitkf.levelset2binary(mask)
         mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
         sitk.WriteImage(mask, output_file_name)
+        os.remove(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:])
         #############################################################################
         # rigid + spline
         image_data["registration_type"] = "longitudinal"       
