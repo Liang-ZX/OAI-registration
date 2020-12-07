@@ -79,7 +79,42 @@ class registration(ABC):
     def vf_spline(self):
         pass
 
+    def rm_reference(self, image_data):
+        anatomy                      = image_data["current_anatomy"]
+        reference_mask_name          = image_data["reference_folder"] + image_data[anatomy + "mask_file_name"]
+        reference_mask_dil_name      = image_data["reference_folder"] + image_data[anatomy + "dil_mask_file_name"]
+        reference_mask_levelset_name = image_data["reference_folder"] + image_data[anatomy + "levelset_mask_file_name"]
+        radius                       = image_data["dilate_radius"]
 
+        # dilate mask
+        if os.path.exists(reference_mask_dil_name):
+            os.remove(reference_mask_dil_name)
+
+        # convert mask from binary to levelset for warping
+        if os.path.exists(reference_mask_levelset_name):
+            os.remove(reference_mask_levelset_name)
+    
+    def rm_tibia_reference(self, image_data):
+        anatomy                      = image_data["bone"]
+        reference_mask_name          = image_data[anatomy + "mask_file_name"]
+        reference_mask_name = reference_mask_name[:-5] + 't' + reference_mask_name[-4:]
+        reference_mask_name          = image_data["reference_folder"] + reference_mask_name
+        reference_mask_dil_name      = image_data[anatomy + "dil_mask_file_name"]
+        reference_mask_dil_name = reference_mask_dil_name[:-8] + 't' + reference_mask_dil_name[-7:]
+        reference_mask_dil_name      = image_data["reference_folder"] + reference_mask_dil_name
+        reference_mask_levelset_name = image_data[anatomy + "levelset_mask_file_name"]
+        reference_mask_levelset_name = reference_mask_levelset_name[:-14] + 't' + reference_mask_levelset_name[-13:]
+        reference_mask_levelset_name = image_data["reference_folder"] + reference_mask_levelset_name
+        radius                       = image_data["dilate_radius"]
+
+        # dilate mask
+        if os.path.exists(reference_mask_dil_name):
+            os.remove(reference_mask_dil_name)
+
+        # convert mask from binary to levelset for warping
+        if os.path.exists(reference_mask_levelset_name):
+            os.remove(reference_mask_levelset_name)
+    
     def prepare_reference(self, image_data):
 
         anatomy                      = image_data["current_anatomy"]
@@ -182,6 +217,68 @@ class registration(ABC):
         for i in range(0,len(file_content)):
             f.write(file_content[i])
         f.close()
+        
+        
+    def modify_tibia_transformation(self, image_data, transformation): 
+        """
+        It creates a new parameter file to calculate the inverted transformation
+        Input: 
+            parameter file used for registration of moving to reference
+        Output: 
+            modifided parameter files used to calculate the inverted transformation
+        """
+
+        anatomy = image_data["current_anatomy"]
+
+        # transformation file name
+        if transformation   == "rigid":
+            input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"]
+            output_file_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
+            input_file_name = input_file_name[:-11] + 't' + input_file_name[-10:]
+            output_file_name = output_file_name[:-11] + 't' + output_file_name[-10:]
+        elif transformation == "similarity":
+            input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_similarity_transf_name"]
+            output_file_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_similarity_transf_name"]
+            input_file_name = input_file_name[:-16] + 't' + input_file_name[-15:]
+            output_file_name = output_file_name[:-16] + 't' + output_file_name[-15:]
+        elif transformation == "spline":
+            input_file_name  = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"]
+            output_file_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_transf_name"]
+            input_file_name = input_file_name[:-12] + 't' + input_file_name[-11:]
+            output_file_name = output_file_name[:-12] + 't' + output_file_name[-11:]
+        else:
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: This transformation is not supported. Use 'rigid', 'similarity', or 'spline'")
+            print("----------------------------------------------------------------------------------------")
+            return
+        
+        # check if transformation file exists
+        if not os.path.exists(input_file_name):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: The file  %s does not exist" % (input_file_name) )
+            print("----------------------------------------------------------------------------------------")
+            return
+
+        # read the file and modify the needed lines
+        file_content=[]
+        i = 0
+        for line in open(input_file_name):
+            file_content.append(line)
+            if "InitialTransformParametersFileName" in file_content[i]:
+                file_content[i] = "(InitialTransformParametersFileName \"NoInitialTransform\")\n"
+            if "DefaultPixelValue" in file_content[i]:
+                file_content[i] = "(DefaultPixelValue -4)\n"
+            if "Size" in file_content[i] and transformation == "rigid":
+                file_content[i] = "(Size %s %s %s)\n" % (image_data["image_size"][0], image_data["image_size"][1], image_data["image_size"][2])
+            if "Spacing" in file_content[i] and transformation == "rigid":
+                file_content[i] = "(Spacing %s %s %s)\n" % (image_data["image_spacing"][0], image_data["image_spacing"][1], image_data["image_spacing"][2])
+            i = i+1
+
+        # write the file
+        f = open(output_file_name,"w")
+        for i in range(0,len(file_content)):
+            f.write(file_content[i])
+        f.close()
 
 
 
@@ -246,6 +343,9 @@ class bone (registration):
             return
         # change output names
         else:
+            if os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "rigid_name"]):
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "rigid_name"])
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"])
             os.rename(image_data["registered_sub_folder"] + "result.0.mha",
                       image_data["registered_sub_folder"] + image_data[anatomy + "rigid_name"])
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
@@ -283,6 +383,9 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "similarity_name"]):
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "similarity_name"])
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "similarity_transf_name"])
             os.rename(image_data["registered_sub_folder"] + "result.0.mha",
                       image_data["registered_sub_folder"] + image_data[anatomy + "similarity_name"])
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
@@ -323,6 +426,9 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"]):
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"])
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"])
             os.rename(image_data["registered_sub_folder"] + "result.0.mha",
                       image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"])
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
@@ -362,6 +468,8 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"])
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt",
                       image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"])
 
@@ -399,6 +507,8 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_similarity_transf_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_similarity_transf_name"])
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt",
                       image_data["i_registered_sub_folder"] + image_data[anatomy + "i_similarity_transf_name"])
 
@@ -436,6 +546,8 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"])
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt",
                       image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"])
 
@@ -473,6 +585,8 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists( image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
             os.rename(image_data["i_registered_sub_folder"] + "result.mha",
                       image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
 
@@ -505,6 +619,8 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"])
             os.rename(image_data["i_registered_sub_folder"] + "result.mha",
                       image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"])
 
@@ -537,6 +653,8 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"])
             os.rename(image_data["i_registered_sub_folder"] + "result.mha",
                       image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"])
 
@@ -625,10 +743,13 @@ class bone (registration):
             return
         # change output names
         else:
-            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
-                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:])
             tibia_name = image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"]
             tibia_name = tibia_name[:-11] + 't' + tibia_name[-10:]
+            if os.path.exists(image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:]):
+                os.remove(image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:])
+                os.remove(tibia_name)
+            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "rigid_name"][1:])
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
 
 
@@ -664,10 +785,13 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
-            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
-                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "similarity_name"][1:])
             tibia_name = image_data["registered_sub_folder"] + image_data[anatomy + "similarity_transf_name"]
             tibia_name = tibia_name[:-16] + 't' + tibia_name[-15:]
+            if os.path.exists(image_data["registered_sub_folder"] + 't' + image_data[anatomy + "similarity_name"][1:]):
+                os.remove(image_data["registered_sub_folder"] + 't' + image_data[anatomy + "similarity_name"][1:])
+                os.remove(tibia_name)
+            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "similarity_name"][1:])            
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
 
 
@@ -706,10 +830,13 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
-            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
-                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "spline_name"][1:])
             tibia_name = image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"]
             tibia_name = tibia_name[:-12] + 't' + tibia_name[-11:]
+            if os.path.exists(image_data["registered_sub_folder"] + 't' + image_data[anatomy + "spline_name"][1:]):
+                os.remove(image_data["registered_sub_folder"] + 't' + image_data[anatomy + "spline_name"][1:])
+                os.remove(tibia_name)
+            os.rename(image_data["registered_sub_folder"] + "result.0.mha",
+                      image_data["registered_sub_folder"] + 't' + image_data[anatomy + "spline_name"][1:])            
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
     
     
@@ -750,6 +877,8 @@ class bone (registration):
         else:
             tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_rigid_transf_name"]
             tibia_name = tibia_name[:-11] + 't' + tibia_name[-10:]
+            if os.path.exists(tibia_name):
+                os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
 
 
@@ -790,6 +919,8 @@ class bone (registration):
         else:
             tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_similarity_transf_name"]
             tibia_name = tibia_name[:-16] + 't' + tibia_name[-15:]
+            if os.path.exists(tibia_name):
+                os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
 
 
@@ -830,6 +961,8 @@ class bone (registration):
         else:
             tibia_name = image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"]
             tibia_name = tibia_name[:-12] + 't' + tibia_name[-11:]
+            if os.path.exists(tibia_name):
+                os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt", tibia_name)
     
     
@@ -846,8 +979,12 @@ class bone (registration):
         elif image_data["registration_type"] == "longitudinal":
             mask_to_warp          = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy+"m_spline_name"][1:]
         
-        # tranformation
-        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
+        if image_data["registration_type"] == "newsubject":
+            transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
+            transformation = transformation[:-11] + 't' + transformation[-10:]
+        else:
+            # tranformation
+            transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
         # output folder
         output_folder             = image_data["i_registered_sub_folder"]
         # transformix path
@@ -869,6 +1006,8 @@ class bone (registration):
             return
         else:
             tibia_name = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:]
+            if os.path.exists(tibia_name):
+                os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
@@ -878,8 +1017,12 @@ class bone (registration):
         anatomy                   = image_data["current_anatomy"]
         # input mask name
         mask_to_warp              = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy+"m_spline_name"][1:]
-        # tranformation
-        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_transf_name"]
+        if image_data["registration_type"] == "newsubject":
+            transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_similarity_transf_name"]
+            transformation = transformation[:-16] + 't' + transformation[-15:]
+        else:
+            # tranformation
+            transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_transf_name"]
         # output folder
         output_folder             = image_data["i_registered_sub_folder"]
         # transformix path
@@ -901,6 +1044,8 @@ class bone (registration):
             return
         else:
             tibia_name = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy+"m_similarity_name"][1:]
+            if os.path.exists(tibia_name):
+                os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
@@ -912,8 +1057,12 @@ class bone (registration):
         mask_to_warp              = image_data[anatomy + "levelset_mask_file_name"]
         mask_to_warp = mask_to_warp[:-14] + 't' + mask_to_warp[-13:]
         mask_to_warp              = image_data["reference_folder"] + mask_to_warp
-        # tranformation
-        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_transf_name"]
+        if image_data["registration_type"] == "newsubject":
+            transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_transf_name"]
+            transformation = transformation[:-12] + 't' + transformation[-11:]
+        else:
+            # tranformation
+            transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_transf_name"]
         # output folder
         output_folder             = image_data["i_registered_sub_folder"]
         # transformix path
@@ -935,6 +1084,8 @@ class bone (registration):
             return
         else:
             tibia_name = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy+"m_spline_name"][1:]
+            if os.path.exists(tibia_name):
+                os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
 
@@ -986,6 +1137,9 @@ class cartilage (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"]):
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"])
+                os.remove(image_data["registered_sub_folder"] + image_data[anatomy + "spline_transf_name"])
             os.rename(image_data["registered_sub_folder"] + "result.0.mha",
                       image_data["registered_sub_folder"] + image_data[anatomy + "spline_name"])
             os.rename(image_data["registered_sub_folder"] + "TransformParameters.0.txt",
@@ -1032,6 +1186,8 @@ class cartilage (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"])
             os.rename(image_data["i_registered_sub_folder"] + "TransformParameters.0.txt",
                       image_data["i_registered_sub_folder"] + image_data[anatomy + "i_spline_transf_name"])
 
@@ -1070,6 +1226,8 @@ class cartilage (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
             os.rename(image_data["i_registered_sub_folder"] + "result.mha",
                       image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
 
@@ -1103,6 +1261,8 @@ class cartilage (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"])
             os.rename(image_data["i_registered_sub_folder"] + "result.mha",
                       image_data["i_registered_sub_folder"] + image_data[anatomy+"m_similarity_name"])
 
@@ -1135,6 +1295,8 @@ class cartilage (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
+            if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"]):
+                os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"])
             os.rename(image_data["i_registered_sub_folder"] + "result.mha",
                       image_data["i_registered_sub_folder"] + image_data[anatomy+"m_spline_name"])
 

@@ -61,7 +61,7 @@ def resample_bwimage(fixed_image):
     new_size = orig_size.copy()
     new_size[2] = int(orig_size[2]*(orig_spacing[2]/orig_spacing[0])+0.5)
     new_size = [int(s) for s in new_size]
-    print(orig_size, new_size)
+#     print(orig_size, new_size)
     isoresample.SetSize(new_size)
     return isoresample.Execute(fixed_image)
 

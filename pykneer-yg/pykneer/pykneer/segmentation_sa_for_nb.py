@@ -85,7 +85,16 @@ def prepare_reference(all_image_data):
 
     # in "longitudinal" and "multimodal" there are several references
     elif image_data["registration_type"] == "longitudinal" or image_data["registration_type"] == "multimodal":
+        
+        for i in range(0,len(all_image_data)):
 
+            # get paths and file names of the first image
+            image_data  = all_image_data[i]
+            image_data["current_anatomy"] = image_data["bone"]
+            bone = elastix_transformix.bone()
+            bone.rm_reference (image_data)
+            bone.rm_tibia_reference (image_data)
+        
         for i in range(0,len(all_image_data)):
 
             # get paths and file names of the first image
@@ -220,8 +229,8 @@ def warp_bone_mask_s(image_data):
         output_file_name = image_data[anatomy + "mask"]
         output_file_name = output_file_name[:-4] + '_rigid' + output_file_name[-4:]
         output_file_name = image_data["segmented_folder"] + output_file_name
-        if os.path.exists(output_file_name):
-            return
+#         if os.path.exists(output_file_name):
+#             return
         if os.path.exists(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_name"]):
             os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_name"])
             os.remove(image_data["i_registered_sub_folder"] + image_data[anatomy + "m_spline_name"])
@@ -352,6 +361,9 @@ def warp_tibia_mask_s(image_data):
         bone.modify_transformation(image_data,"rigid")
         bone.modify_transformation(image_data,"similarity")
         bone.modify_transformation(image_data,"spline")
+        bone.modify_tibia_transformation(image_data,"rigid")
+        bone.modify_tibia_transformation(image_data,"similarity")
+        bone.modify_tibia_transformation(image_data,"spline")
     elif image_data["registration_type"] == "longitudinal":
         bone.modify_transformation(image_data,"rigid")
         bone.modify_transformation(image_data,"spline")
@@ -372,8 +384,8 @@ def warp_tibia_mask_s(image_data):
         output_tmp_name = output_file_name[:-5] + 't' + output_file_name[-4:]
         output_file_name = output_file_name[:-5] + 't_rigid' + output_file_name[-4:]
         output_file_name = image_data["segmented_folder"] + output_file_name
-        if os.path.exists(output_file_name) and os.path.exists(image_data["segmented_folder"]+output_tmp_name):
-            return
+#         if os.path.exists(output_file_name) and os.path.exists(image_data["segmented_folder"]+output_tmp_name):
+#             return
         if os.path.exists(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_spline_name"][1:]):
             os.remove(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:])
             os.remove(image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_spline_name"][1:])
