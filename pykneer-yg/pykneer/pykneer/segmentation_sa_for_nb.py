@@ -413,13 +413,17 @@ def warp_tibia_mask_s(image_data):
     input_file_name  = image_data["i_registered_sub_folder"] + 't' + image_data[anatomy + "m_rigid_name"][1:]
     output_file_name = image_data[anatomy + "mask"]
     output_file_name = output_file_name[:-5] + 't' + output_file_name[-4:]
-    output_file_name = image_data["segmented_folder"] + output_file_name
     mask = sitk.ReadImage(input_file_name)
     mask = sitkf.levelset2binary(mask)
     mask = sitk.Cast(mask,sitk.sitkInt16) # cast to int16 to reduce file size
+    if image_data["registration_type"]   == "newsubject" and image_data['moving_root'][-8:-5] != "TP0":
+        output_file_name = "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal\\" + output_file_name
+    else:
+        output_file_name = image_data["segmented_folder"] + output_file_name
     sitk.WriteImage(mask, output_file_name)
     if image_data['moving_root'][-8:-5] == "TP0":
         shutil.copy(output_file_name, "C:\\Zhixuan\\OAI-registration\\pykneer-yg\\reference\\longitudinal")
+    
 
 def warp_tibia_mask(all_image_data, n_of_processes):
 
