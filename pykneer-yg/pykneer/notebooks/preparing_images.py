@@ -98,6 +98,16 @@ def prepare_image_and_list(caselist):
     long_file.write(newline)
     newline = 'C:\Zhixuan\OAI-registration\pyKNEEr-yg\preprocessed' + '\n'
     long_file.write(newline)
+    
+    # create .\image_list_reference.txt
+    file_path4 = "image_list_reference.txt"
+    ref_file = open(file_path4, 'w+')
+    newline = 'C:\Zhixuan\OAI-registration\pyKNEEr-yg\\reference\\newsubject' + '\n'
+    ref_file.write(newline)
+    newline = 'C:\Zhixuan\OAI-registration\pyKNEEr-yg\preprocessed' + '\n'
+    ref_file.write(newline)
+    newline = 'r reference.mha\n'
+    ref_file.write(newline)
 
     for casei in caselist:
         pi = casei['pid']
@@ -141,6 +151,7 @@ def prepare_image_and_list(caselist):
                     newline = 'r ' + pi + side + '_TP' + str(regtp[tpi]) + '_prep.mha' + '\n'
                 else:
                     newline = 'm ' + pi + side + '_TP' + str(regtp[tpi]) + '_prep.mha' + '\n'
+                    ref_file.write(newline)
                 long_file.write(newline)
 
                 filelist = os.listdir(casepath)
@@ -205,3 +216,4 @@ def prepare_image_and_list(caselist):
     list_file.close()
     subject_file.close()
     long_file.close()
+    ref_file.close()
