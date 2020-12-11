@@ -19,6 +19,7 @@ from abc import ABC, abstractmethod
 import os
 import subprocess
 import SimpleITK as sitk
+from preparing_images import modify_output_line
 
 import pkg_resources
 import platform
@@ -1101,7 +1102,10 @@ class bone (registration):
         # tranformation
         transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
         # output folder
-        output_folder             = image_data["segmented_folder"][:-10] + "centerline\\"
+        
+        output_folder             = image_data["registered_sub_folder"] + "centerline\\"
+        if not os.path.isdir(output_folder):
+            os.mkdir(output_folder)
         # transformix path
         complete_transformix_path = image_data["complete_transformix_path"]
 
@@ -1120,7 +1124,9 @@ class bone (registration):
             print("----------------------------------------------------------------------------------------")
             return
         else:
-            os.rename(output_folder + "outputpoints.txt", output_folder + image_data[anatomy+'mask'][:-10] + "line.txt")
+#             os.rename(output_folder + "outputpoints.txt", output_folder + "registered_line.txt")
+            center_folder             = image_data["segmented_folder"][:-10] + "centerline\\"
+            modify_output_line(output_folder + "outputpoints.txt", center_folder+image_data[anatomy+'mask'][:-10] + "line.txt")
      
             
 # ---------------------------------------------------------------------------------------------------------------------------

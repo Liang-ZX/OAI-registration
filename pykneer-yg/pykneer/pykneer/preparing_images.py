@@ -236,3 +236,22 @@ def prepare_centerline(caselist):
                     f.write("point\n")
                     f.write(str(line.shape[0])+"\n")
                 df.to_csv(ref_path,sep=" ",columns=['x','y','z'], mode='a', header=None, index=False)
+
+                
+def modify_output_line(tmp_path, write_path):
+    wfile = open(write_path,"w+")
+    for line in open(tmp_path,"r"): 
+        index = line.find('OutputPoint')
+        index1 = line.find('[', index, len(line))
+        index2 = line.find(']', index, len(line))
+        num_str = line[index1+1:index2]
+        wordlist=num_str.split()
+        for i, a in enumerate(wordlist):
+            wfile.write(a)
+            if i == 2:
+                wfile.write('\n')
+            else:
+                wfile.write(' ')
+    wfile.close()               
+
+    
