@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import sys
 import os
-%matplotlib inline
 import numpy as np
 from ipywidgets import interact, fixed
 sys.path.append("../../..")
