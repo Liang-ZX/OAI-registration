@@ -1,7 +1,7 @@
 import os
 import importlib
 import sys
-sys.path.append(r'../FRAPPE')
+sys.path.append(r'C:\Zhixuan\FRAPPE')
 import DB
 importlib.reload(DB)
 from DB import DB
@@ -34,7 +34,8 @@ def geteid(pid,TPid,side='L'):
         print('TP',TPid,'found ei',ei)
         return ei
 
-def generate_centerline(pid, TPid, side='L', TPS=['0','12','18','24','30','36','48','60','72','84','96']):
+def generate_centerline(pid, TPid, side='L'):
+    TPS=['0','12','18','24','30','36','48','60','72','84','96']
     VFVersion = '29'
     paths = []
     if TPid not in [0,1,2,3,4,5,6,8,10]:
