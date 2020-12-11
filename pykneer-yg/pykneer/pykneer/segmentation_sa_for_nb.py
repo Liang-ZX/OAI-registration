@@ -432,6 +432,38 @@ def warp_tibia_mask(all_image_data, n_of_processes):
     pool.map(warp_tibia_mask_s, all_image_data)
     print ("-> Warping completed")
     print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
+    
+####################################################################################################
+#  center line
+####################################################################################################
+def warp_centerline_s(image_data):
+#     if os.path.exists(image_data["segmented_folder"] + image_data[image_data["bone"] + "mask"]):
+#         return
+#    print ("-> Warping bone mask of " + image_data["moving_root"])
+
+    # instantiate bone class and provide bone to segment
+    image_data["current_anatomy"] = image_data["bone"]
+    bone = elastix_transformix.bone()
+
+    # get moving image properties (size and spacing for modify_transformation(rigid) and transformix)
+    moving_name  = image_data["moving_folder"] + image_data["moving_name"]
+    moving_image = sitk.ReadImage(moving_name)
+    image_data["image_size"]      = moving_image.GetSize()
+    image_data["image_spacing"]   = moving_image.GetSpacing()
+
+    # modify transformations for mask warping
+    if image_data["registration_type"] == "longitudinal":
+        bone.modify_transformation(image_data,"rigid")
+        
+        bone.centerline_t_rigid     (image_data)
+
+def warp_centerline(all_image_data, n_of_processes):
+
+    start_time = time.time()
+    pool = multiprocessing.Pool(processes=n_of_processes)
+    pool.map(warp_centerline_s, all_image_data)
+    print ("-> Warping completed")
+    print ("-> The total time was %.2f seconds (about %d min)" % ((time.time() - start_time), (time.time() - start_time)/60))
 
 
 

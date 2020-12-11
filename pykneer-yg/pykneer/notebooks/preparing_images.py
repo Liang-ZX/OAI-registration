@@ -1,6 +1,7 @@
 import pydicom
 import os
 import numpy as np
+import pandas as pd
 import shutil
 import matplotlib.pyplot as plt
 import importlib
@@ -20,6 +21,7 @@ import glob
 TPS = ['0','12','18','24','30','36','48','60','72','84','96']
 sys.path.append(r'C:\Zhixuan\OAI-registration')
 from ServerDicomIO import getdcmpath
+from icafeAPI import generate_centerline
 
 
 def drawcont(cas, shape, fi):
@@ -217,3 +219,20 @@ def prepare_image_and_list(caselist):
     subject_file.close()
     long_file.close()
     ref_file.close()
+    
+    
+def prepare_centerline(caselist):
+    ref_dir = r"C:\\Zhixuan\\OAI-registration\\pykneer-yg/reference/centerline/"
+    for case in caselist:
+        pid = case['pid']
+        side = case['side']
+        for j in range(len(case['TP'])):
+            if (generate_centerline(pid, case['TP'][j], side)):
+                file_path = r'C:\\Zhixuan\\centerline/P'+pid+side+'/tracing_raw_ves_TH_'+str(case['TP'][j])+'_P'+pid+side+'_U.swc'
+                ref_path = ref_dir + pid + side + "_TP" + str(case['TP'][j]) + "_line.txt"
+                df = pd.read_csv(file_path, header=None, sep=' ',index_col=0, names=['vessel_id','x','y','z','undefined','last_id'])
+                line = np.array([df['x'], df['y'], df['z']]).T
+                with open(ref_path,"w+") as f:
+                    f.write("point\n")
+                    f.write(str(line.shape[0])+"\n")
+                df.to_csv(write_path,sep=" ",columns=['x','y','z'], mode='a', header=None, index=False)

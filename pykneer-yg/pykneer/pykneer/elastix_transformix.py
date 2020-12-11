@@ -1088,7 +1088,41 @@ class bone (registration):
                 os.remove(tibia_name)
             os.rename(image_data["i_registered_sub_folder"] + "result.mha", tibia_name)
 
+##############################################################
+# centerline
+################################################################
+    def centerline_t_rigid(self, image_data):
+        # anatomy
+        anatomy                   = image_data["current_anatomy"]
+        # input mask name
+        if image_data["registration_type"] != "longitudinal":
+            return
+        centerline_to_warp = image_data["reference_folder"][:-12] + "centerline\\" + image_data[anatomy+'mask_file_name'][:-10] + "line.txt"
+        # tranformation
+        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
+        # output folder
+        output_folder             = image_data["segmented_folder"][:-11] + "centerline\\"
+        # transformix path
+        complete_transformix_path = image_data["complete_transformix_path"]
 
+        # execute transformation
+        #print (" Rigid warping")
+        cmd = [complete_transformix_path, "-def",  os.path.abspath(centerline_to_warp),
+                                          "-tp",  os.path.abspath(transformation),
+                                          "-out", os.path.abspath(output_folder)]
+        elastix_path              = image_data["elastix_folder"]
+        subprocess.run(cmd, cwd=elastix_path)
+
+        # change output names
+        if not os.path.exists(output_folder + "outputpoints.txt"):
+            print("----------------------------------------------------------------------------------------")
+            print("ERROR: No output created in bone.centerline_t_rigid()")
+            print("----------------------------------------------------------------------------------------")
+            return
+        else:
+            os.rename(output_folder + "outputpoints.txt", output_folder + image_data[anatomy+'mask'][:-10] + "line.txt")
+     
+            
 # ---------------------------------------------------------------------------------------------------------------------------
 # CARTILAGE INSTANCE --------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
