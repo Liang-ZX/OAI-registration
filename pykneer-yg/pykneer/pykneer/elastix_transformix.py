@@ -1097,11 +1097,11 @@ class bone (registration):
         # input mask name
         if image_data["registration_type"] != "longitudinal":
             return
-        centerline_to_warp = image_data["reference_folder"][:-12] + "centerline\\" + image_data[anatomy+'mask_file_name'][:-10] + "line.txt"
+        centerline_to_warp = image_data["reference_folder"][:-13] + "centerline\\" + image_data[anatomy+'mask_file_name'][:-10] + "line.txt"
         # tranformation
         transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
         # output folder
-        output_folder             = image_data["segmented_folder"][:-11] + "centerline\\"
+        output_folder             = image_data["segmented_folder"][:-10] + "centerline\\"
         # transformix path
         complete_transformix_path = image_data["complete_transformix_path"]
 

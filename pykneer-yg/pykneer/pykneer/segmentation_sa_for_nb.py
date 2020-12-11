@@ -450,11 +450,10 @@ def warp_centerline_s(image_data):
     moving_image = sitk.ReadImage(moving_name)
     image_data["image_size"]      = moving_image.GetSize()
     image_data["image_spacing"]   = moving_image.GetSpacing()
-
+    
     # modify transformations for mask warping
     if image_data["registration_type"] == "longitudinal":
         bone.modify_transformation(image_data,"rigid")
-        
         bone.centerline_t_rigid     (image_data)
 
 def warp_centerline(all_image_data, n_of_processes):

@@ -235,4 +235,4 @@ def prepare_centerline(caselist):
                 with open(ref_path,"w+") as f:
                     f.write("point\n")
                     f.write(str(line.shape[0])+"\n")
-                df.to_csv(write_path,sep=" ",columns=['x','y','z'], mode='a', header=None, index=False)
+                df.to_csv(ref_path,sep=" ",columns=['x','y','z'], mode='a', header=None, index=False)
