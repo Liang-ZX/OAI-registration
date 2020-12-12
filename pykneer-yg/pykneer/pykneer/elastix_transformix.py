@@ -1100,7 +1100,7 @@ class bone (registration):
             return
         centerline_to_warp = image_data["reference_folder"][:-13] + "centerline\\" + image_data['reference_name'][:-8] + "line.txt"
         # tranformation
-        transformation            = image_data["i_registered_sub_folder"] + image_data[anatomy + "m_rigid_transf_name"]
+        transformation            = image_data["registered_sub_folder"] + image_data[anatomy + "rigid_transf_name"]
         # output folder
         
         output_folder             = image_data["registered_sub_folder"] + "centerline\\"

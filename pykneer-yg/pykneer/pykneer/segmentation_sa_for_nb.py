@@ -453,7 +453,7 @@ def warp_centerline_s(image_data):
     
     # modify transformations for mask warping
     if image_data["registration_type"] == "longitudinal":
-        bone.modify_transformation(image_data,"rigid")
+#         bone.modify_transformation(image_data,"rigid")
         bone.centerline_t_rigid     (image_data)
 
 def warp_centerline(all_image_data, n_of_processes):

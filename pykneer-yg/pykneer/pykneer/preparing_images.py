@@ -230,12 +230,15 @@ def prepare_centerline(caselist):
             if (generate_centerline(pid, case['TP'][j], side)):
                 file_path = r'C:\\Zhixuan\\centerline/P'+pid+side+'/tracing_raw_ves_TH_'+str(case['TP'][j])+'_P'+pid+side+'_U.swc'
                 ref_path = ref_dir + pid + side + "_TP" + str(case['TP'][j]) + "_line.txt"
-                df = pd.read_csv(file_path, header=None, sep=' ',index_col=0, names=['vessel_id','x','y','z','undefined','last_id'])
+                df = pd.read_csv(file_path, header=None, sep=' ', names=['index', 'vessel_id','x','y','z','undefined','last_id'])
                 line = np.array([df['x'], df['y'], df['z']]).T
+#                 df['x'] = 384 - df['x']
+#                 df['y'] = 384 - df['y']
+#                 df['z'] = 4.11 * 75 - df['z']
                 with open(ref_path,"w+") as f:
                     f.write("point\n")
                     f.write(str(line.shape[0])+"\n")
-                df.to_csv(ref_path,sep=" ",columns=['x','y','z'], mode='a', header=None, index=False)
+                df.to_csv(ref_path,sep=" ",columns=['x','y','index'], mode='a', header=None, index=False)
 
                 
 def modify_output_line(tmp_path, write_path):
