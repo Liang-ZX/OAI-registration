@@ -36,6 +36,7 @@ def display_images_with_alpha(image_z, alpha, fixed, moving):
     fixed = sitk.GetArrayFromImage(fixed)
     moving = sitk.GetArrayFromImage(moving)
     dst = cv2.addWeighted(fixed[image_z,:,:],1.0-alpha,moving[image_z,:,:],alpha,0)
+    plt.figure(figsize=(5,5))
     plt.imshow(dst, cmap=plt.cm.Greys_r)
     # plt.imshow(sitk.GetArrayViewFromImage(img),cmap=plt.cm.Greys_r);
     plt.axis('off')
