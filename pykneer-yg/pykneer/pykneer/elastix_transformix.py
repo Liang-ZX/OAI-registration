@@ -19,6 +19,8 @@ from abc import ABC, abstractmethod
 import os
 import subprocess
 import SimpleITK as sitk
+import sys
+sys.path.append("../../..")
 from preparing_images import modify_output_line
 
 import pkg_resources

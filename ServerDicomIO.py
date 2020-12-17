@@ -12,7 +12,7 @@ from scipy.ndimage import zoom
 import scipy.misc
 import importlib
 import sys
-sys.path.append(r'..\FRAPPE')
+sys.path.append(r'C:/Zhixuan/FRAPPE')
 import DB
 importlib.reload(DB)
 from DB import DB

@@ -14,7 +14,6 @@ m 9939718L_TP3_prep.mha
 m 9939718L_TP5_prep.mha
 m 9939718L_TP6_prep.mha
 m 9939718L_TP8_prep.mha
-m 9939718L_TP10_prep.mha
 r 9939718R_TP0_prep.mha
 m 9939718R_TP1_prep.mha
 m 9939718R_TP2_prep.mha
@@ -29,7 +28,6 @@ m 9941231L_TP3_prep.mha
 m 9941231L_TP5_prep.mha
 m 9941231L_TP6_prep.mha
 m 9941231L_TP8_prep.mha
-m 9941231L_TP10_prep.mha
 r 9941231R_TP0_prep.mha
 m 9941231R_TP1_prep.mha
 m 9941231R_TP3_prep.mha
@@ -39,18 +37,15 @@ r 9942724L_TP0_prep.mha
 m 9942724L_TP1_prep.mha
 m 9942724L_TP3_prep.mha
 m 9942724L_TP6_prep.mha
-m 9942724L_TP10_prep.mha
 r 9942724R_TP0_prep.mha
 m 9942724R_TP1_prep.mha
 m 9942724R_TP3_prep.mha
 m 9942724R_TP5_prep.mha
 m 9942724R_TP6_prep.mha
-m 9942724R_TP10_prep.mha
 r 9941446L_TP0_prep.mha
 m 9941446L_TP1_prep.mha
 m 9941446L_TP3_prep.mha
 m 9941446L_TP6_prep.mha
-m 9941446L_TP8_prep.mha
 m 9941446L_TP10_prep.mha
 r 9941446R_TP0_prep.mha
 m 9941446R_TP1_prep.mha
@@ -61,7 +56,6 @@ m 9941446R_TP8_prep.mha
 m 9941446R_TP10_prep.mha
 r 9404954L_TP0_prep.mha
 m 9404954L_TP1_prep.mha
-m 9404954L_TP3_prep.mha
 m 9404954L_TP6_prep.mha
 m 9404954L_TP8_prep.mha
 m 9404954L_TP10_prep.mha
