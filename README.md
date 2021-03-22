@@ -6,16 +6,16 @@
 
 We develop an automatic and robust algorithm for longitudinal registration of knee Magnetic Resonance Imaging (MRI) across the time span of eight years. This algorithm firstly achieves rigid registration based on femoral segmentation, and then makes evaluations based on tibial alignment.
 
-It's the code of this article. Codebase is from pyKNEEr research [1](#refer-anchor-1).
+Here's the code of this article. Codebase refers to the *pyKNEEr* research [[1]](#refer-anchor-1).
 
 ![rigid registration](https://user-images.githubusercontent.com/42173433/112028657-5f38f400-8b73-11eb-9104-a7680bd02e52.png)
 
 ## File Structure
 
------ main directory
---- `pykneer-yg/` pykneer codebase
---- `pykneer-yg/pykneer/notebooks/main.ipynb` application entry point
---- `annotated_tibia/` code and result of generating tibial mask of sample case
+----- main directory  
+--- `pykneer-yg/` pykneer codebase  
+--- `pykneer-yg/pykneer/notebooks/main.ipynb` application entry point  
+--- `annotated_tibia/` code and result of generating tibial mask of sample case  
 
 ## Reference
 <div id="refer-anchor-1"></div>
