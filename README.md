@@ -12,10 +12,10 @@ Here's the code of this article. Codebase refers to the *pyKNEEr* research [[1]]
 
 ## File Structure
 
------ main directory  
---- `pykneer-yg/` pykneer codebase  
---- `pykneer-yg/pykneer/notebooks/main.ipynb` application entry point  
---- `annotated_tibia/` code and result of generating tibial mask of sample case  
+.  
++-- pykneer-yg/ `pykneer codebase`  
++-- pykneer-yg/pykneer/notebooks/main.ipynb `application entry point`  
++-- annotated_tibia/ `code and result of generating tibial mask of sample case`  
 
 ## Reference
 <div id="refer-anchor-1"></div>
