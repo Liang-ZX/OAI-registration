@@ -11,11 +11,15 @@ Here's the code of this article. Codebase refers to the *pyKNEEr* research [[1]]
 ![rigid registration](https://user-images.githubusercontent.com/42173433/112028657-5f38f400-8b73-11eb-9104-a7680bd02e52.png)
 
 ## File Structure
-
-.  
-+-- pykneer-yg/ `pykneer codebase`  
-+-- pykneer-yg/pykneer/notebooks/main.ipynb `application entry point`  
-+-- annotated_tibia/ `code and result of generating tibial mask of sample case`  
+```
+└── OAI-registration
+    ├── pykneer-yg          # pykneer codebase
+    │   └── pykneer
+    │         └── notebooks     
+    │             ├── main.ipynb    # application entry point
+    │             └── ...
+    └── annotated_tibia     # code and result of generating tibial mask of sample case
+```
 
 ## Reference
 <div id="refer-anchor-1"></div>
