@@ -6,7 +6,7 @@ This is the official code for **ISMRM 2021** abstract paper
 
 [Zhixuan Liang](https://liang-zx.github.io/), Yin Guo, and [Chun Yuan](https://scholar.google.com/citations?user=ujKJ-w4AAAAJ&hl=en&oi=ao).
 
-For full details, please check out our [paper link](https://archive.ismrm.org/2021/3734.html).
+For full details, please check out our [paper link](https://cds.ismrm.org/protected/21MProceedings/PDFfiles/3734.html).
 
 ## Introduction
 
