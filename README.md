@@ -1,6 +1,6 @@
 # Longitudinal Registration of Knee MRI Based on Femoral and Tibial Alignment
 
-**Congratulations!!! This abstract paper has been accepted by ISMRM Annual Meeting 2021.**
+This is the official code for **ISMRM 2021** abstract paper. [Paper Link](https://archive.ismrm.org/2021/3734.html).
 
 ## Introduction
 
