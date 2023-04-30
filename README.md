@@ -1,6 +1,12 @@
 # Longitudinal Registration of Knee MRI Based on Femoral and Tibial Alignment
 
-This is the official code for **ISMRM 2021** abstract paper. [Paper Link](https://archive.ismrm.org/2021/3734.html).
+This is the official code for **ISMRM 2021** abstract paper 
+
+[Longitudinal Registration of Knee MRI Based on Femoral and Tibial Alignment](https://archive.ismrm.org/2021/3734.html) by 
+
+[Zhixuan Liang](https://liang-zx.github.io/), Yin Guo, and [Chun Yuan](https://scholar.google.com/citations?user=ujKJ-w4AAAAJ&hl=en&oi=ao).
+
+For full details, please check out our [paper link](https://archive.ismrm.org/2021/3734.html).
 
 ## Introduction
 
@@ -21,6 +27,16 @@ Here's the code of this article. Codebase refers to the *pyKNEEr* research [[1]]
     └── annotated_tibia     # code and result of generating tibial mask of sample case
 ```
 
-## Reference
+## Acknowledgement
 <div id="refer-anchor-1"></div>
-- [1] Bonaretti, Serena, Garry E. Gold, and Gary S. Beaupre. "pyKNEEr: An image analysis workflow for open and reproducible research on femoral knee cartilage." Plos one15.1 (2020): e0226501.
+
+- Bonaretti, Serena, Garry E. Gold, and Gary S. Beaupre. "pyKNEEr: An image analysis workflow for open and reproducible research on femoral knee cartilage." Plos one15.1 (2020): e0226501.
+
+## Citation
+To cite our work, you can use the following bibtex
+```
+@article{lianglongitudinal,
+  title={Longitudinal Registration of Knee MRI Based on Femoral and Tibial Alignment},
+  author={Liang, Zhixuan and Guo, Yin and Yuan, Chun},
+}
+```
